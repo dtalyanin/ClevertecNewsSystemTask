@@ -1,4 +1,4 @@
-INSERT INTO news (title, text, user_name, created_time)
+INSERT INTO news (title, text, username, created_time)
 VALUES ('Duis mattis egestas metus.', 'Mauris lacinia sapien quis libero. Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum.', 'melosa', '2023-02-01 01:08:18'),
        ('Aliquam non mauris.', 'Duis at velit eu est congue elementum. In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros.', 'chucho', '2023-03-10 15:28:38'),
        ('Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.', 'Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh. Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est.', 'francesca', '2023-03-02 23:44:05'),
@@ -20,7 +20,7 @@ VALUES ('Duis mattis egestas metus.', 'Mauris lacinia sapien quis libero. Nullam
        ('Suspendisse ornare consequat lectus.', 'In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue.', 'crystal', '2023-03-21 09:29:27'),
        ('Duis consequat dui nec nisi volutpat eleifend.', 'Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst. Maecenas ut massa quis augue luctus tincidunt.', 'bradford', '2023-02-13 10:47:27');
 
-INSERT INTO comments (text, user_name, news_id, created_time)
+INSERT INTO comments (text, username, news_id, created_time)
 VALUES ('Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc.', 'lane', 1, '2023-04-10 10:28:31'),
        ('Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit. Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue.', 'chrissie', 1, '2023-04-21 15:20:11'),
        ('Vestibulum sed magna at nunc commodo placerat. Praesent blandit.', 'slade', 1, '2023-04-10 04:42:11'),
