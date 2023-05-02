@@ -5,10 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.clevertec.nms.dao.CommentsRepository;
 import ru.clevertec.nms.models.Comment;
+import ru.clevertec.nms.utils.PageableHelper;
 
 import java.util.List;
 
-import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
+import static ru.clevertec.nms.utils.PageableHelper.*;
+
 
 @Service
 public class CommentsService {

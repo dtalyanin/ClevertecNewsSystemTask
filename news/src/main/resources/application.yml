@@ -6,6 +6,7 @@ spring:
       hibernate:
         format_sql: true
 
+
   data:
     web:
       pageable:
@@ -19,6 +20,12 @@ spring:
 
   liquibase:
     enabled: true
+  cloud:
+    openfeign:
+      client:
+        security:
+          loggerLevel: full
+
 
 logging:
   level:
@@ -27,3 +34,4 @@ logging:
         orm:
           jpa: DEBUG
         transaction: DEBUG
+

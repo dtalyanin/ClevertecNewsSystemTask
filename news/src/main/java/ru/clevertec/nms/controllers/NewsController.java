@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.nms.dto.news.NewsDto;
 import ru.clevertec.nms.dto.news.SearchNewsDto;
 import ru.clevertec.nms.services.NewsService;
+import ru.clevertec.nms.services.UsersService;
 
 import java.util.List;
 
@@ -23,14 +24,17 @@ import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
 public class NewsController {
 
     private final NewsService service;
+    private final UsersService usersService;
 
     @Autowired
-    public NewsController(NewsService service) {
+    public NewsController(NewsService service, UsersService usersService) {
         this.service = service;
+        this.usersService = usersService;
     }
 
     @GetMapping
     public ResponseEntity<List<NewsDto>> getAllNewsWithPagination(Pageable pageable) {
+        System.out.println(usersService.getPostById("gloria"));
         System.out.println(pageable);
         return ResponseEntity.ok(service.getAllNewsWithPagination(pageable));
     }
