@@ -4,7 +4,8 @@ import lombok.Data;
 import ru.clevertec.uas.models.Role;
 
 @Data
-public class UserDto {
+public class UserDtoWithPassword {
     private String username;
+    private String password;
     private Role role;
 }

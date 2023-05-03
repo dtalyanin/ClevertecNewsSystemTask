@@ -1,27 +1,71 @@
 package ru.clevertec.uas.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.clevertec.uas.dto.CreateDto;
+import ru.clevertec.uas.dto.UpdateDto;
 import ru.clevertec.uas.dto.UserDto;
+import ru.clevertec.uas.dto.UserDtoWithPassword;
+import ru.clevertec.uas.models.responses.ModificationResponse;
 import ru.clevertec.uas.services.UsersService;
+
+import java.net.URI;
+import java.util.List;
+
+import static ru.clevertec.uas.utils.constants.MessageConstants.EMPTY_USERNAME;
+import static ru.clevertec.uas.utils.constants.MessageConstants.MIN_ID_MESSAGE;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@Validated
 public class UsersController {
 
     private final UsersService service;
 
-    @Autowired
-    public UsersController(UsersService service) {
-        this.service = service;
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(service.getAllUsers());
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<UserDto> getUserByName(@PathVariable String name) {
-        return ResponseEntity.ok(service.getUserByName(name));
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        return ResponseEntity.ok(service.getUserById(id));
     }
+
+    @GetMapping("/full/{username}")
+    public ResponseEntity<UserDtoWithPassword> getUserWithPasswordByName(
+            @PathVariable @NotBlank(message = EMPTY_USERNAME) String username) {
+        return ResponseEntity.ok(service.getUserByUsername(username));
+    }
+
+    @PostMapping
+    public ResponseEntity<ModificationResponse> addUser(@RequestBody @Valid CreateDto dto) {
+        ModificationResponse response = service.addUser(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ModificationResponse> updateUser(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, @RequestBody @Valid UpdateDto dto) {
+        return ResponseEntity.ok(service.updateUser(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ModificationResponse> deleteUserById(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        return ResponseEntity.ok(service.deleteUserById(id));
+    }
+
 }

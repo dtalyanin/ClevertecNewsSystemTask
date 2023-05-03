@@ -1,4 +1,5 @@
-
+server:
+  port: 8090
 
 spring:
   jpa:
@@ -23,5 +24,3 @@ logging:
         orm:
           jpa: DEBUG
         transaction: DEBUG
-server:
-  port: 8090

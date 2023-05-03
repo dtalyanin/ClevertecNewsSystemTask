@@ -1,34 +1,21 @@
 package ru.clevertec.uas.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import ru.clevertec.uas.dao.UsersRepository;
+import ru.clevertec.uas.dto.CreateDto;
+import ru.clevertec.uas.dto.UpdateDto;
 import ru.clevertec.uas.dto.UserDto;
-import ru.clevertec.uas.models.User;
-import ru.clevertec.uas.utils.mappers.UsersMapper;
+import ru.clevertec.uas.dto.UserDtoWithPassword;
+import ru.clevertec.uas.models.responses.ModificationResponse;
 
-import java.util.Optional;
+import java.util.List;
 
-@Service
-public class UsersService {
 
-    private final UsersRepository repository;
-    private final UsersMapper mapper;
+public interface UsersService {
 
-    @Autowired
-    public UsersService(UsersRepository repository, UsersMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+    List<UserDto> getAllUsers();
+    UserDto getUserById(long id);
+    UserDtoWithPassword getUserByUsername(String username);
+    ModificationResponse addUser(CreateDto dto);
+    ModificationResponse updateUser(long id, UpdateDto dto);
+    ModificationResponse deleteUserById(long id);
 
-    public UserDto getUserByName(String userName) {
-        Optional<User> oUser = repository.findByUsername(userName);
-        if (oUser.isEmpty()) {
-            throw new RuntimeException("aas");
-        }
-        System.out.println(oUser.get());
-        UserDto dto = mapper.convertUserToDto(oUser.get());
-        System.out.println(dto);
-        return dto;
-    }
 }

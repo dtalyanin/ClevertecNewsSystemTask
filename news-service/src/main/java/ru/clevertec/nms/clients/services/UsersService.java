@@ -10,6 +10,6 @@ import java.util.Optional;
 @FeignClient(value = "users-service", url = "http://localhost:8090")
 public interface UsersService {
 
-    @GetMapping( "/users/{username}")
+    @GetMapping( "/users/full/{username}")
     Optional<UserDto> getUserByUsername(@PathVariable("username") String username);
 }
