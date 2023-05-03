@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Dmitry Talyanin
+      changes:
+        - sqlFile:
+            dbms: 'postgresql'
+            path: db/changelog/changeset/scripts/data.sql
