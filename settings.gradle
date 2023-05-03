@@ -1,2 +1,2 @@
 rootProject.name = 'news-managment-system'
-include 'news', 'security'
+include 'news-service', 'users-service'
