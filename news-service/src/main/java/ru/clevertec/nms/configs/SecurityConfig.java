@@ -59,9 +59,10 @@ public class SecurityConfig {
                         "/auth/**"
                 )
                 .permitAll()
+
                 .requestMatchers("/news/**")
-                .hasAnyRole(Role.ADMIN.name(), Role.SUBSCRIBER.name())
-                .requestMatchers("/news").hasAnyAuthority(Role.ADMIN.name(), Role.SUBSCRIBER.name(), "ROLE_ADMIN")
+                .hasRole("ADMIN")
+
 
 
                 .anyRequest()

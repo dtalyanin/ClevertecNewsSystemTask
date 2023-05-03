@@ -1,22 +1,33 @@
 package ru.clevertec.nms.security;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.clevertec.nms.clients.dto.Role;
 import ru.clevertec.nms.clients.dto.UserDto;
 
 import java.util.Collection;
 import java.util.Collections;
 
 @AllArgsConstructor
+@Getter
+@ToString
 public class UserDetailsDecorator implements UserDetails {
 
     private final UserDto user;
+    private Role role;
+
+    public UserDetailsDecorator(UserDto user) {
+        this.user = user;
+        this.role = user.getRole();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     @Override

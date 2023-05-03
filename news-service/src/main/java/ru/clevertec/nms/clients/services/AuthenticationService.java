@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.clevertec.nms.clients.dto.AuthenticationRequest;
 import ru.clevertec.nms.clients.dto.AuthenticationResponse;
+import ru.clevertec.nms.exceptions.ErrorCode;
+import ru.clevertec.nms.exceptions.NotFoundException;
 import ru.clevertec.nms.security.JwtService;
 import ru.clevertec.nms.security.UserDetailsDecorator;
 
@@ -34,7 +36,7 @@ public class AuthenticationService {
                     )
             );
         } catch (BadCredentialsException e) {
-            System.out.println(e);
+            throw new NotFoundException("NOT VALID", 1, ErrorCode.NEWS_NOT_FOUND);
         }
 
         var user = service.getUserByUsername(request.getUsername())
