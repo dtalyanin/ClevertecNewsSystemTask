@@ -32,7 +32,7 @@ public class News implements BaseEntity<Long> {
     @NotBlank(message = "News must contain user's name")
     @Max(value = 50, message = "Max length of user's name is 200 characters")
     @Column(name = "username", nullable = false)
-    private String userName;
+    private String username;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy="news")

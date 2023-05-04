@@ -4,7 +4,7 @@
 
 Основные сущности:
 -	**news** (новость) содержит поля: id, time, title, text и comments (list).
--	**comment** содержит поля: id, time, text, username и news_id.
+-	**comment** содержит поля: id, time, text, notValidObject и news_id.
 
 Требования:
 1.	Использовать Spring Boot 3.x, Java 17, Gradle и PostgreSQL

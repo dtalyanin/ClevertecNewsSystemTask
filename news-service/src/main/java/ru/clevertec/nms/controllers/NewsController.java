@@ -7,16 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.clevertec.nms.dto.news.NewsDto;
 import ru.clevertec.nms.dto.news.SearchNewsDto;
+import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.security.UserDetailsDecorator;
 import ru.clevertec.nms.services.NewsService;
 import ru.clevertec.nms.clients.services.UsersService;
 
+import java.net.URI;
 import java.util.List;
 
 import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
@@ -54,5 +54,33 @@ public class NewsController {
     public ResponseEntity<NewsDto> getNewsByIdWithPagination(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, Pageable pageable) {
         return ResponseEntity.ok(service.getNewsWithCommentsPagination(id, pageable));
+    }
+
+    @PostMapping
+    public ResponseEntity<ModificationResponse> addNews(@RequestBody NewsDto dto) {
+        ModificationResponse response = service.addNews(dto, getUserDetails());
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ModificationResponse> updateNews(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
+            @RequestBody NewsDto dto) {
+        return ResponseEntity.ok(service.updateNews(id, dto, getUserDetails()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ModificationResponse> deleteNewsById(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        return ResponseEntity.ok(service.deleteNewsById(id, getUserDetails()));
+    }
+
+    private UserDetailsDecorator getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return  (UserDetailsDecorator) authentication.getPrincipal();
     }
 }

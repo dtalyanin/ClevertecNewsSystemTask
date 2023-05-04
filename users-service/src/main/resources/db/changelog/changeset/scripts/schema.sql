@@ -6,7 +6,7 @@ CREATE TABLE roles
 CREATE TABLE users
 (
     id       BIGSERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE CHECK (length(username) > 0),
+    notValidObject VARCHAR(50) NOT NULL UNIQUE CHECK (length(notValidObject) > 0),
     password VARCHAR     NOT NULL CHECK (length(password) > 0),
     role     VARCHAR(50) NOT NULL REFERENCES roles (role)
 );
