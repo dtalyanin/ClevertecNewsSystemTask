@@ -15,9 +15,9 @@ public interface NewsMapper {
     NewsDto convertNewsToDto(News news);
     @Mapping(source = "comments", target = "comments")
     NewsWithCommentsDto convertNewsToDtoWithComments(News news, List<CommentDto> comments);
-    News convertCreateDtoToNews(CreateNewsDto dto);
-    void updateNews(@MappingTarget News news, UpdateNewsDto dto);
-    News convertSearchDtoToNews(SearchNewsDto dto);
+    News convertModificationDtoToNews(ModificationNewsDto dto, String username);
+    void updateNews(@MappingTarget News news, ModificationNewsDto dto);
+    News convertDtoToNews(NewsDto dto);
     List<NewsDto> convertAllNewsToDto(List<News> news);
 
 }

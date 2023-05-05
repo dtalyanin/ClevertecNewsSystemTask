@@ -1,8 +1,8 @@
 package ru.clevertec.nms.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,8 +24,8 @@ public class Comment implements BaseEntity<Long> {
     @Column(name = "text", nullable = false)
     private String text;
     @NotBlank(message = "Comment must contain username")
-    @Max(value = 50, message = "Max length of username is 200 characters")
-    @Column(name = "username", nullable = false, length = 50)
+    @Size(max = 50, message = "Max length of username is 50 characters")
+    @Column(name = "username", nullable = false, updatable = false, length = 50)
     private String username;
     @ManyToOne
     @JoinColumn(name="news_id")

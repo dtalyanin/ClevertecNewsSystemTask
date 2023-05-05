@@ -9,13 +9,16 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Getter
 public enum Role {
+
     ADMIN(Set.of(Permission.NEWS_MANAGE, Permission.COMMENTS_MENAGE)),
-    JOURNALIST(Collections.singleton(Permission.NEWS_MANAGE)),
+    JOURNALIST(Set.of(Permission.NEWS_MANAGE, Permission.COMMENTS_MENAGE)),
     SUBSCRIBER(Collections.singleton(Permission.COMMENTS_MENAGE));
+
+    private static final String ROLE_PREFIX = "ROLE_";
 
     private final Set<Permission> permissions;
 
-    public String getNameWithRolePrefix() {
-        return "ROLE_" + this.name();
+    public String getNameWithPrefix() {
+        return ROLE_PREFIX + this.name();
     }
 }

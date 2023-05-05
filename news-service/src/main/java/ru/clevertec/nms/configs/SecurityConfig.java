@@ -61,9 +61,13 @@ public class SecurityConfig {
                 .requestMatchers(GET, "/news/**")
                 .permitAll()
 
-                .requestMatchers(POST, "/news/**").hasAuthority(Permission.NEWS_MANAGE.name())
-                .requestMatchers(PATCH, "/news/**").hasAuthority(Permission.NEWS_MANAGE.name())
-                .requestMatchers(DELETE, "/news/**").hasAuthority(Permission.NEWS_MANAGE.name())
+                .requestMatchers(POST, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
+                .requestMatchers(PATCH, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
+                .requestMatchers(DELETE, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
+
+                .requestMatchers(POST, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
+                .requestMatchers(PATCH, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
+                .requestMatchers(DELETE, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
 
                 .anyRequest()
                 .authenticated()

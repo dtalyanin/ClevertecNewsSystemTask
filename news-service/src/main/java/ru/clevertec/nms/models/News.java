@@ -29,9 +29,9 @@ public class News implements BaseEntity<Long> {
     @NotBlank(message = "News body cannot be empty")
     @Column(name = "text", nullable = false)
     private String text;
-    @NotBlank(message = "News must contain user's name")
-    @Size(max = 50, message = "Max length of username is 200 characters")
-    @Column(name = "username", nullable = false)
+    @NotBlank(message = "News must contain username")
+    @Size(max = 50, message = "Max length of username is 50 characters")
+    @Column(name = "username", nullable = false, updatable = false, length = 50)
     private String username;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -43,5 +43,14 @@ public class News implements BaseEntity<Long> {
     @PrePersist
     public void addTimeOfCreation() {
         this.time = LocalDateTime.now();
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setNews(this);
+    }
+
+    public void deleteComment(Comment comment) {
+        this.comments.remove(comment);
     }
 }
