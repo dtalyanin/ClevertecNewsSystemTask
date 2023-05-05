@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 @Data
 public class CommentDto {
     private String text;
-    private String userName;
+    private String username;
     private LocalDateTime time;
 }

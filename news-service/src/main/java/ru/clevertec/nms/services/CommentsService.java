@@ -1,18 +1,15 @@
 package ru.clevertec.nms.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.clevertec.nms.dao.CommentsRepository;
 import ru.clevertec.nms.dto.CommentDto;
-import ru.clevertec.nms.models.Comment;
-import ru.clevertec.nms.utils.PageableHelper;
 import ru.clevertec.nms.utils.mappers.CommentsMapper;
 
 import java.util.List;
 
-import static ru.clevertec.nms.utils.PageableHelper.*;
+import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
 
 
 @Service
@@ -28,6 +25,6 @@ public class CommentsService {
     }
 
     public CommentDto getCommentByIdAndNewsId(long newsId, long userId) {
-
+        return null;
     }
 }

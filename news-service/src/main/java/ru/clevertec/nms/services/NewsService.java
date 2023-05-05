@@ -1,47 +1,39 @@
 package ru.clevertec.nms.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.nms.clients.dto.Permission;
+import ru.clevertec.nms.clients.dto.Role;
+import ru.clevertec.nms.clients.services.UsersService;
 import ru.clevertec.nms.dao.NewsRepository;
 import ru.clevertec.nms.dto.CommentDto;
-import ru.clevertec.nms.dto.news.NewsDto;
-import ru.clevertec.nms.dto.news.NewsWithCommentsDto;
-import ru.clevertec.nms.dto.news.SearchNewsDto;
+import ru.clevertec.nms.dto.news.*;
 import ru.clevertec.nms.exceptions.AccessException;
 import ru.clevertec.nms.exceptions.ErrorCode;
 import ru.clevertec.nms.exceptions.NotFoundException;
-import ru.clevertec.nms.models.Comment;
+import ru.clevertec.nms.models.AuthenticatedUser;
 import ru.clevertec.nms.models.News;
 import ru.clevertec.nms.models.responses.ModificationResponse;
-import ru.clevertec.nms.security.UserDetailsDecorator;
 import ru.clevertec.nms.utils.mappers.NewsMapper;
 
 import java.util.List;
 import java.util.Optional;
 
-import static ru.clevertec.nms.utils.PageableHelper.*;
-import static ru.clevertec.nms.utils.SearchHelper.*;
+import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
+import static ru.clevertec.nms.utils.SearchHelper.getExample;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class NewsService {
 
     private final NewsRepository repository;
     private final NewsMapper mapper;
     private final CommentsService commentsService;
-
-    @Autowired
-    public NewsService(NewsRepository repository, NewsMapper mapper, CommentsService commentsService) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.commentsService = commentsService;
-    }
+    private final UsersService usersService;
 
     @Transactional(readOnly = true)
     public List<NewsDto> getAllNewsWithPagination(Pageable pageable) {
@@ -70,65 +62,54 @@ public class NewsService {
         return mapper.convertNewsToDtoWithComments(news, comments);
     }
 
-    public ModificationResponse addNews(NewsDto dto, UserDetailsDecorator userDetails) {
-        if (!verifyUserHasPermissions(userDetails)) {
-            throw new AccessException(NOT_ENOUGH_PERMISSIONS + CANNOT_ADD_END,
-                    userDetails.getUser().getRole(),
-                    ErrorCode.NO_PERMISSIONS_FOR_MODIFICATION_NEWS);
-        }
-        News news = mapper.convertDtoToNews(dto);
+    public ModificationResponse addNews(CreateNewsDto dto, AuthenticatedUser user) {
+        News news = mapper.convertCreateDtoToNews(dto);
+        news.setUsername(user.getUsername());
         repository.save(news);
-        return new ModificationResponse(news.getId(),NEWS_ADDED);
+        return new ModificationResponse(news.getId(), NEWS_ADDED);
     }
 
-    public ModificationResponse updateNews(long id, NewsDto dto, UserDetailsDecorator userDetails) {
-        if (verifyUserHasPermissions(userDetails)) {
-            throw new AccessException(NOT_ENOUGH_PERMISSIONS + CANNOT_UPDATE_END,
-                    userDetails.getUser().getRole(),
-                    ErrorCode.NO_PERMISSIONS_FOR_MODIFICATION_NEWS);
-        }
+    public ModificationResponse updateNews(long id, UpdateNewsDto dto, AuthenticatedUser user) {
         Optional<News> oNews = repository.findById(id);
         if (oNews.isEmpty()) {
             throw new NotFoundException(NEWS + NOT_FOUND + CANNOT_UPDATE_END, id, ErrorCode.NEWS_NOT_FOUND);
         }
         News news = oNews.get();
-        if (verifyUserIsNewsOwner(userDetails, news)) {
+        if (checkUserCannotPerformOperation(user, news)) {
             throw new AccessException(NOT_NEWS_OWNER + CANNOT_UPDATE_END,
-                    userDetails.getUser().getRole(),
-                    ErrorCode.NO_PERMISSIONS_FOR_MODIFICATION_NEWS);
+                    ErrorCode.NOT_OWNER_FOR_MODIFICATION_NEWS);
+        }
+        if (usersService.getUserByUsername(dto.getUsername()).isEmpty()) {
+            throw new NotFoundException(USERNAME_NOT_FOUND, dto.getUsername(), ErrorCode.USER_NOT_FOUND);
         }
         mapper.updateNews(news, dto);
         repository.save(news);
         return new ModificationResponse(id, NEWS_UPDATED);
     }
 
-    public ModificationResponse deleteNewsById(long id, UserDetailsDecorator userDetails) {
-        if (verifyUserHasPermissions(userDetails)) {
-            throw new AccessException(NOT_ENOUGH_PERMISSIONS + CANNOT_DELETE_END,
-                    userDetails.getUser().getRole(),
-                    ErrorCode.NO_PERMISSIONS_FOR_MODIFICATION_NEWS);
-        }
+    public ModificationResponse deleteNewsById(long id, AuthenticatedUser user) {
         Optional<News> oNews = repository.findById(id);
         if (oNews.isEmpty()) {
             throw new NotFoundException(NEWS + NOT_FOUND + CANNOT_DELETE_END, id, ErrorCode.NEWS_NOT_FOUND);
         }
         News news = oNews.get();
-        if (verifyUserIsNewsOwner(userDetails, news)) {
+        if (checkUserCannotPerformOperation(user, news)) {
             throw new AccessException(NOT_NEWS_OWNER + CANNOT_DELETE_END,
-                    userDetails.getUser().getRole(),
-                    ErrorCode.NO_PERMISSIONS_FOR_MODIFICATION_NEWS);
+                    ErrorCode.NOT_OWNER_FOR_MODIFICATION_NEWS);
         }
         repository.delete(news);
         return new ModificationResponse(id, NEWS_DELETED);
     }
 
-    private boolean verifyUserHasPermissions(UserDetailsDecorator userDetails) {
-        return userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .noneMatch(Permission.NEWS_MANAGE.name()::equals);
+    private boolean checkUserCannotPerformOperation(AuthenticatedUser user, News news) {
+        return !checkUserIsAdmin(user) && !checkUserIsNewsOwner(user, news);
     }
 
-    private boolean verifyUserIsNewsOwner(UserDetailsDecorator userDetails, News news) {
-        return news.getUsername().equals(userDetails.getUsername());
+    private boolean checkUserIsNewsOwner(AuthenticatedUser user, News news) {
+        return news.getUsername().equals(user.getUsername());
+    }
+
+    private boolean checkUserIsAdmin(AuthenticatedUser user) {
+        return user.getAuthorities().contains(Role.ADMIN.getNameWithRolePrefix());
     }
 }

@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class NotFoundResponse {
-    private Object incorrectValue;
+public class ErrorResponse {
     private String errorMessage;
     private int errorCode;
 }

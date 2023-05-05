@@ -8,7 +8,6 @@ public class MessageConstants {
     public static final String NEWS_UPDATED = "News updated successfully";
     public static final String NEWS_DELETED = "News deleted successfully";
     public static final String NOT_FOUND = " not found in database";
-    public static final String CANNOT_ADD_END = ": cannot add";
     public static final String CANNOT_UPDATE_END = ": cannot update";
     public static final String CANNOT_DELETE_END = ": cannot delete";
     public static final String NOT_NEWS_OWNER = "User not owner of this news";

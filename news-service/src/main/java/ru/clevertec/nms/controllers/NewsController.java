@@ -4,21 +4,21 @@ import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.clevertec.nms.dto.news.CreateNewsDto;
 import ru.clevertec.nms.dto.news.NewsDto;
 import ru.clevertec.nms.dto.news.SearchNewsDto;
+import ru.clevertec.nms.dto.news.UpdateNewsDto;
 import ru.clevertec.nms.models.responses.ModificationResponse;
-import ru.clevertec.nms.security.UserDetailsDecorator;
 import ru.clevertec.nms.services.NewsService;
 import ru.clevertec.nms.clients.services.UsersService;
 
 import java.net.URI;
 import java.util.List;
 
+import static ru.clevertec.nms.utils.SecurityHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
 
 @RestController
@@ -37,11 +37,6 @@ public class NewsController {
 
     @GetMapping
     public ResponseEntity<List<NewsDto>> getAllNewsWithPagination(Pageable pageable) {
-        System.out.println(usersService.getUserByUsername("gloria"));
-        System.out.println(pageable);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsDecorator personDetails = (UserDetailsDecorator) authentication.getPrincipal();
-        System.out.println(personDetails);
         return ResponseEntity.ok(service.getAllNewsWithPagination(pageable));
     }
 
@@ -57,30 +52,26 @@ public class NewsController {
     }
 
     @PostMapping
-    public ResponseEntity<ModificationResponse> addNews(@RequestBody NewsDto dto) {
-        ModificationResponse response = service.addNews(dto, getUserDetails());
+    public ResponseEntity<ModificationResponse> addNews(@RequestBody CreateNewsDto dto) {
+        ModificationResponse response = service.addNews(dto, getAuthenticatedUserFromSecurityContext());
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(response.id()).toUri();
+                .buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateNews(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
-            @RequestBody NewsDto dto) {
-        return ResponseEntity.ok(service.updateNews(id, dto, getUserDetails()));
+            @RequestBody UpdateNewsDto dto) {
+        return ResponseEntity.ok(service.updateNews(id, dto, getAuthenticatedUserFromSecurityContext()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteNewsById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
-        return ResponseEntity.ok(service.deleteNewsById(id, getUserDetails()));
+        return ResponseEntity.ok(service.deleteNewsById(id, null));
     }
 
-    private UserDetailsDecorator getUserDetails() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return  (UserDetailsDecorator) authentication.getPrincipal();
-    }
 }

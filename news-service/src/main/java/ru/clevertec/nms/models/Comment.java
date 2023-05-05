@@ -26,7 +26,7 @@ public class Comment implements BaseEntity<Long> {
     @NotBlank(message = "Comment must contain username")
     @Max(value = 50, message = "Max length of username is 200 characters")
     @Column(name = "username", nullable = false, length = 50)
-    private String userName;
+    private String username;
     @ManyToOne
     @JoinColumn(name="news_id")
     private News news;

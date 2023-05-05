@@ -14,4 +14,8 @@ public enum Role {
     SUBSCRIBER(Collections.singleton(Permission.COMMENTS_MENAGE));
 
     private final Set<Permission> permissions;
+
+    public String getNameWithRolePrefix() {
+        return "ROLE_" + this.name();
+    }
 }

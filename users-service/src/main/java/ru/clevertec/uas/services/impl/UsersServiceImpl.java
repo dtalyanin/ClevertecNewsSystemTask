@@ -50,10 +50,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public UserDtoWithPassword getUserByUsername(String username) {
         Optional<User> oUser = repository.findByUsername(username);
-        if (oUser.isEmpty()) {
-            throw new UserNotFoundException(USERNAME_NOT_FOUND, username);
-        }
-        return mapper.convertUserToDtoWithPassword(oUser.get());
+        return mapper.convertUserToDtoWithPassword(oUser.orElse(null));
     }
 
     @Override
