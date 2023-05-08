@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public class NewsDto {
     private String title;
     private String text;
-    private String userName;
+    private String username;
     private LocalDateTime time;
 }

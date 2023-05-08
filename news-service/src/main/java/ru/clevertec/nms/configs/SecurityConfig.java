@@ -10,18 +10,15 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.clevertec.nms.clients.dto.Role;
+import ru.clevertec.nms.clients.dto.Permission;
 import ru.clevertec.nms.security.JwtFilter;
-import ru.clevertec.nms.security.UserDetailServiceImpl;
 
 import static org.springframework.http.HttpMethod.*;
-import static org.springframework.http.HttpMethod.DELETE;
 
 @Configuration
 @EnableWebSecurity
@@ -55,15 +52,22 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
+
                 .requestMatchers(
-                        "/auth/**"
+                         "/auth/**"
                 )
                 .permitAll()
 
-                .requestMatchers("/news/**")
-                .hasRole("ADMIN")
+                .requestMatchers(GET, "/news/**")
+                .permitAll()
 
+                .requestMatchers(POST, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
+                .requestMatchers(PATCH, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
+                .requestMatchers(DELETE, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
 
+                .requestMatchers(POST, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
+                .requestMatchers(PATCH, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
+                .requestMatchers(DELETE, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
 
                 .anyRequest()
                 .authenticated()
@@ -74,7 +78,6 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         ;
-
         return http.build();
     }
 }

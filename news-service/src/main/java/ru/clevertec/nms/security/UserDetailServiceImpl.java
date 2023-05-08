@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.clevertec.nms.clients.dto.UserDto;
 import ru.clevertec.nms.clients.services.UsersService;
 import ru.clevertec.nms.exceptions.ErrorCode;
-import ru.clevertec.nms.security.exceptions.UserNotFoundException;
+import ru.clevertec.nms.exceptions.UserNotFoundException;
 
 import java.util.Optional;
 

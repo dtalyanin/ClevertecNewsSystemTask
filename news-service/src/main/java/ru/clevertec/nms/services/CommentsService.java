@@ -1,29 +1,30 @@
 package ru.clevertec.nms.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import ru.clevertec.nms.dao.CommentsRepository;
-import ru.clevertec.nms.models.Comment;
-import ru.clevertec.nms.utils.PageableHelper;
+import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.nms.dto.comments.CommentDto;
+import ru.clevertec.nms.dto.comments.ModificationCommentDto;
+import ru.clevertec.nms.models.AuthenticatedUser;
+import ru.clevertec.nms.models.responses.ModificationResponse;
 
 import java.util.List;
 
-import static ru.clevertec.nms.utils.PageableHelper.*;
+public interface CommentsService {
+    @Transactional(readOnly = true)
+    List<CommentDto> getCommentsByNewsIdWithPagination(long newsId, Pageable pageable);
 
+    @Transactional(readOnly = true)
+    List<CommentDto> getAllSearchedCommentsByNewsIdWithPagination(long newsId, CommentDto dto, Pageable pageable);
 
-@Service
-public class CommentsService {
+    @Transactional(readOnly = true)
+    CommentDto getCommentByIdAndNewsId(long newsId, long commentId);
 
-    private final CommentsRepository repository;
+    ModificationResponse addComment(long newsId, ModificationCommentDto dto, AuthenticatedUser user);
 
-    @Autowired
-    public CommentsService(CommentsRepository repository) {
-        this.repository = repository;
-    }
+    ModificationResponse updateComment(long newsId,
+                                       long commentId,
+                                       ModificationCommentDto dto,
+                                       AuthenticatedUser user);
 
-    public List<Comment> getCommentsByNewsIdWithPagination(long newsId, Pageable pageable) {
-        pageable = setPageableUnsorted(pageable);
-        return repository.findAllByNewsId(newsId, pageable);
-    }
+    ModificationResponse deleteCommentById(long newsId, long commentId, AuthenticatedUser user);
 }

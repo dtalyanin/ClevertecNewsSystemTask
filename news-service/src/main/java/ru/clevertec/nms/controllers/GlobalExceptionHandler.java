@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.clevertec.nms.exceptions.AccessException;
 import ru.clevertec.nms.exceptions.NotFoundException;
+import ru.clevertec.nms.models.responses.ErrorResponse;
 import ru.clevertec.nms.models.responses.NotFoundResponse;
 import ru.clevertec.nms.models.responses.validation_responses.ValidationResponse;
 
@@ -29,7 +31,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<NotFoundResponse> handleNotFoundException(NotFoundException e) {
-        NotFoundResponse response = new NotFoundResponse(e.getIncorrectId(), e.getMessage(), e.getErrorCode().getCode());
+        NotFoundResponse response = new NotFoundResponse(e.getIncorrectValue(), e.getMessage(), e.getErrorCode().getCode());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AccessException.class)
+    public ResponseEntity<ErrorResponse> handleAccessException(AccessException e) {
+        ErrorResponse response = new ErrorResponse(e.getMessage(), e.getErrorCode().getCode());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }

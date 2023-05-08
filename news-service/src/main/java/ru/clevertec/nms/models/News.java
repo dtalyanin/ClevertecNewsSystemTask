@@ -1,8 +1,8 @@
 package ru.clevertec.nms.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,16 +23,16 @@ public class News implements BaseEntity<Long> {
     @Column(name = "id")
     private Long id;
     @NotBlank(message = "News title cannot be empty")
-    @Max(value = 200, message = "Max length of title is 200 characters")
+    @Size(max = 200, message = "Max length of title is 200 characters")
     @Column(name = "title", nullable = false, length = 200)
     private String title;
     @NotBlank(message = "News body cannot be empty")
     @Column(name = "text", nullable = false)
     private String text;
-    @NotBlank(message = "News must contain user's name")
-    @Max(value = 50, message = "Max length of user's name is 200 characters")
-    @Column(name = "username", nullable = false)
-    private String userName;
+    @NotBlank(message = "News must contain username")
+    @Size(max = 50, message = "Max length of username is 50 characters")
+    @Column(name = "username", nullable = false, updatable = false, length = 50)
+    private String username;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy="news")
@@ -43,5 +43,14 @@ public class News implements BaseEntity<Long> {
     @PrePersist
     public void addTimeOfCreation() {
         this.time = LocalDateTime.now();
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setNews(this);
+    }
+
+    public void deleteComment(Comment comment) {
+        this.comments.remove(comment);
     }
 }

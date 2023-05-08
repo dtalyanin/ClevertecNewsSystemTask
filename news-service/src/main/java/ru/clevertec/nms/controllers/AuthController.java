@@ -22,9 +22,6 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @Valid AuthenticationRequest authDto) {
-        System.out.println(authDto);
-        AuthenticationResponse response = service.authenticate(authDto);
-        System.out.println(response.token());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.authenticate(authDto));
     }
 }
