@@ -16,6 +16,7 @@ import ru.clevertec.nms.exceptions.NotFoundException;
 import ru.clevertec.nms.models.AuthenticatedUser;
 import ru.clevertec.nms.models.Comment;
 import ru.clevertec.nms.models.News;
+import ru.clevertec.nms.models.Operation;
 import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.utils.PageableHelper;
 import ru.clevertec.nms.utils.SearchHelper;
@@ -58,7 +59,7 @@ public class CommentsService {
         checkNewsWithIdNotExist(newsId);
         Optional<Comment> oComment = repository.findByIdAndNewsId(commentId, newsId);
         if (oComment.isEmpty()) {
-            throw new NotFoundException(COMMENT + NOT_FOUND_WITH_NEWS_ID + newsId, commentId, ErrorCode.COMMENT_NOT_FOUND);
+            throw new NotFoundException(COMMENT_NOT_FOUND + NOT_FOUND_WITH_NEWS_ID + newsId, commentId, ErrorCode.COMMENT_NOT_FOUND);
         }
         return mapper.convertCommentToDto(oComment.get());
     }
@@ -83,18 +84,24 @@ public class CommentsService {
         if (!newsRepository.existsById(newsId)) {
             throw new NotFoundException(NEWS_WITH_ID_NOT_FOUND + NOT_FOUND + CANNOT_UPDATE_END, newsId, ErrorCode.NEWS_NOT_FOUND);
         }
-        Optional<Comment> oComment = repository.findById(commentId);
-        if (oComment.isEmpty()) {
-            throw new NotFoundException(COMMENT + NOT_FOUND + CANNOT_UPDATE_END, commentId, ErrorCode.COMMENT_NOT_FOUND);
-        }
-        Comment comment = oComment.get();
-        if (checkUserCannotPerformOperation(user, comment)) {
-            throw new AccessException(NOT_COMMENT_OWNER + CANNOT_UPDATE_END,
-                    ErrorCode.NOT_OWNER_FOR_MODIFICATION_COMMENT);
-        }
+        Comment comment = getCommentAndVerifyUserPermissions(commentId, user, Operation.UPDATE);
         mapper.updateComment(comment, dto);
         repository.save(comment);
         return new ModificationResponse(commentId, COMMENT_UPDATED);
+    }
+
+    private Comment getCommentAndVerifyUserPermissions(long commentId, AuthenticatedUser user, Operation operation) {
+        Optional<Comment> oComment = repository.findById(commentId);
+        if (oComment.isEmpty()) {
+            String message = COMMENT_NOT_FOUND + CANNOT_END + operation.getName();
+            throw new NotFoundException(message, commentId, ErrorCode.COMMENT_NOT_FOUND);
+        }
+        Comment comment = oComment.get();
+        if (checkUserCannotPerformOperation(user, comment)) {
+            String message = NOT_COMMENT_OWNER + CANNOT_END + operation.getName();
+            throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_MODIFICATION_COMMENT);
+        }
+        return comment;
     }
 
     public ModificationResponse deleteCommentById(long newsId, long commentId, AuthenticatedUser user) {
@@ -103,19 +110,9 @@ public class CommentsService {
             throw new NotFoundException(NEWS_WITH_ID_NOT_FOUND + NOT_FOUND, newsId, ErrorCode.NEWS_NOT_FOUND);
         }
         News news = oNews.get();
-        Optional<Comment> oComment = repository.findById(commentId);
-        if (oComment.isEmpty()) {
-            throw new NotFoundException(COMMENT + NOT_FOUND + CANNOT_DELETE_END, commentId, ErrorCode.COMMENT_NOT_FOUND);
-        }
-        Comment comment = oComment.get();
-        if (checkUserCannotPerformOperation(user, comment)) {
-            throw new AccessException(NOT_COMMENT_OWNER + CANNOT_DELETE_END,
-                    ErrorCode.NOT_OWNER_FOR_MODIFICATION_COMMENT);
-        }
-        System.out.println(news.getComments());
+        Comment comment = getCommentAndVerifyUserPermissions(commentId, user, Operation.DELETE);
         news.deleteComment(comment);
         repository.delete(comment);
-        System.out.println(news.getComments());
         return new ModificationResponse(commentId, COMMENT_DELETED);
     }
 

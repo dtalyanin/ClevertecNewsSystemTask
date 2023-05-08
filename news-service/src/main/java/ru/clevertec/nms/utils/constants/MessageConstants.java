@@ -4,7 +4,7 @@ public class MessageConstants {
     public static final String MIN_ID_MESSAGE = "Min ID value is 1";
 
     public static final String NEWS_WITH_ID_NOT_FOUND = "News with ID not found in DB";
-    public static final String COMMENT = "Comment";
+    public static final String COMMENT_NOT_FOUND = "Comment not found in DB";
     public static final String NEWS_ADDED = "News added successfully";
     public static final String NEWS_UPDATED = "News updated successfully";
     public static final String NEWS_DELETED = "News deleted successfully";
