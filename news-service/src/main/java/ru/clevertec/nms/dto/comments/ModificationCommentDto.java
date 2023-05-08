@@ -1,4 +1,4 @@
-package ru.clevertec.nms.dto;
+package ru.clevertec.nms.dto.comments;
 
 import lombok.Data;
 

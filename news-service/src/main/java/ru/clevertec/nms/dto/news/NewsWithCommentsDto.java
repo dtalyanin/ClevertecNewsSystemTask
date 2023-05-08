@@ -1,7 +1,7 @@
 package ru.clevertec.nms.dto.news;
 
 import lombok.Data;
-import ru.clevertec.nms.dto.CommentDto;
+import ru.clevertec.nms.dto.comments.CommentDto;
 
 import java.util.List;
 

@@ -39,7 +39,7 @@ public class NewsController {
     @GetMapping("/{id}")
     public ResponseEntity<NewsDto> getNewsByIdWithCommentsPagination(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, Pageable pageable) {
-        return ResponseEntity.ok(service.getNewsWithCommentsPagination(id, pageable));
+        return ResponseEntity.ok(service.getNewsByIdWithCommentsPagination(id, pageable));
     }
 
     @PostMapping

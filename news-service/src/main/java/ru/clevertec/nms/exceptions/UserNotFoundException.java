@@ -1,7 +1,8 @@
-package ru.clevertec.nms.security.exceptions;
+package ru.clevertec.nms.exceptions;
 
-import ru.clevertec.nms.exceptions.ErrorCode;
+import lombok.Getter;
 
+@Getter
 public class UserNotFoundException extends IllegalArgumentException {
     private final String username;
     private final ErrorCode errorCode;

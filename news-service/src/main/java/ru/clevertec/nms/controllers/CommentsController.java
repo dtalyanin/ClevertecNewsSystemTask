@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.clevertec.nms.dto.CommentDto;
-import ru.clevertec.nms.dto.ModificationCommentDto;
+import ru.clevertec.nms.dto.comments.CommentDto;
+import ru.clevertec.nms.dto.comments.ModificationCommentDto;
 import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.services.CommentsService;
 
