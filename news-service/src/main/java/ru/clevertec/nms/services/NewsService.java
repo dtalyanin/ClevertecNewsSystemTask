@@ -29,5 +29,5 @@ public interface NewsService {
 
     ModificationResponse updateNews(long id, ModificationNewsDto dto, AuthenticatedUser user);
 
-    CommentDto deleteNewsById(long id, AuthenticatedUser user);
+    ModificationResponse deleteNewsById(long id, AuthenticatedUser user);
 }

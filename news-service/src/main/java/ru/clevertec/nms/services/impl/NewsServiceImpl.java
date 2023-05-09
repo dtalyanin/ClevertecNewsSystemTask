@@ -1,6 +1,7 @@
 package ru.clevertec.nms.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,9 @@ import ru.clevertec.nms.utils.mappers.NewsMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
-import static ru.clevertec.nms.utils.SearchHelper.getExample;
-import static ru.clevertec.nms.utils.UserHelper.checkUserCannotPerformOperation;
+import static ru.clevertec.nms.utils.PageableHelper.*;
+import static ru.clevertec.nms.utils.SearchHelper.*;
+import static ru.clevertec.nms.utils.UserHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @Service
@@ -58,8 +59,10 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("news")
     public NewsWithCommentsDto getNewsByIdWithCommentsPagination(long id, Pageable pageable) {
         News news = getNewsById(id, Operation.GET);
+        pageable = setPageableUnsorted(pageable);
         List<Comment> comments = commentsRepository.findAllByNewsId(id, pageable);
         return mapper.convertNewsToDtoWithComments(news, comments);
     }

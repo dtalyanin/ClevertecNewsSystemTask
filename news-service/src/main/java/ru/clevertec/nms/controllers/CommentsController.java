@@ -53,12 +53,11 @@ public class CommentsController {
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
             @RequestBody ModificationCommentDto dto) {
         CommentDto commentDto = service.addComment(newsId, dto, getAuthenticatedUserFromSecurityContext());
-        ModificationResponse response = ;
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(response.getId()).toUri();
-        return ResponseEntity.created(uri).body(new ModificationResponse(commentDto));
+                .buildAndExpand(1).toUri();
+        return ResponseEntity.created(uri).body(null);
     }
 
     @PatchMapping("/{commentId}")

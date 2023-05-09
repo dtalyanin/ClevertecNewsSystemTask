@@ -1,6 +1,7 @@
 package ru.clevertec.nms.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "comments")
     public CommentDto getCommentByIdAndNewsId(long newsId, long commentId) {
         newsService.checkNewsWithIdNotExist(newsId, Operation.GET);
         Optional<Comment> oComment = repository.findByIdAndNewsId(commentId, newsId);
@@ -71,7 +73,7 @@ public class CommentsServiceImpl implements CommentsService {
        newsService.checkNewsWithIdNotExist(newsId, Operation.ADD);
         Comment comment = mapper.convertModificationDtoToComment(dto, user.getUsername());
         repository.save(comment);
-        return ;
+        return null;
     }
 
     @Override

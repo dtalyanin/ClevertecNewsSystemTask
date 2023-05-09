@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @param <T> type that cache should work with
  */
-@Component
+
 public class LFUCache<T> implements Cache<T> {
 
     private final int capacity;

@@ -2,6 +2,8 @@ package ru.clevertec.nms.controllers;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -59,9 +61,9 @@ public class NewsController {
         return ResponseEntity.ok(service.updateNews(id, dto, getAuthenticatedUserFromSecurityContext()));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ModificationResponse> deleteNewsById(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
-        return ResponseEntity.ok(service.deleteNewsById(id, getAuthenticatedUserFromSecurityContext()));
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<ModificationResponse> deleteNewsById(
+//            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+//        return ResponseEntity.ok(service.deleteNewsById(id, getAuthenticatedUserFromSecurityContext()));
+//    }
 }

@@ -8,7 +8,6 @@ import ru.clevertec.nms.utils.cache.Cache;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class LRUCache<T> implements Cache<T> {
 
     private final int capacity;
