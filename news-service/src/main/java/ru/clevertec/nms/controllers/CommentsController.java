@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 import static ru.clevertec.nms.utils.SecurityHelper.*;
-import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
+import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController
 @RequestMapping("/news/{newsId}/comments")
@@ -52,12 +52,13 @@ public class CommentsController {
     public ResponseEntity<ModificationResponse> addComment(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
             @RequestBody ModificationCommentDto dto) {
-        ModificationResponse response = service.addComment(newsId, dto, getAuthenticatedUserFromSecurityContext());
+        CommentDto commentDto = service.addComment(newsId, dto, getAuthenticatedUserFromSecurityContext());
+        ModificationResponse response = ;
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(response.getId()).toUri();
-        return ResponseEntity.created(uri).body(response);
+        return ResponseEntity.created(uri).body(new ModificationResponse(commentDto));
     }
 
     @PatchMapping("/{commentId}")
@@ -65,13 +66,15 @@ public class CommentsController {
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long commentId,
             @RequestBody ModificationCommentDto dto) {
-        return ResponseEntity.ok(service.updateComment(newsId, commentId, dto, getAuthenticatedUserFromSecurityContext()));
+        service.updateComment(newsId, commentId, dto, getAuthenticatedUserFromSecurityContext());
+        return ResponseEntity.ok(new ModificationResponse(commentId, COMMENT_UPDATED));
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ModificationResponse> deleteCommentById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long commentId) {
-        return ResponseEntity.ok(service.deleteCommentById(newsId, commentId, getAuthenticatedUserFromSecurityContext()));
+        service.deleteCommentById(newsId, commentId, getAuthenticatedUserFromSecurityContext());
+        return ResponseEntity.ok(new ModificationResponse(commentId, COMMENT_DELETED));
     }
 }

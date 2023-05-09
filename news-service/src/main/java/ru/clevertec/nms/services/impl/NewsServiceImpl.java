@@ -66,17 +66,6 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
-    public News getNewsById(long id, Operation operation) {
-        Optional<News> oNews = repository.findById(id);
-        if (oNews.isEmpty()) {
-            String message = NEWS_WITH_ID_NOT_FOUND + CANNOT_END + operation.getName();
-            throw new NotFoundException(message, id, ErrorCode.NEWS_NOT_FOUND);
-        }
-        return oNews.get();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public void checkNewsWithIdNotExist(long id, Operation operation) {
         if (!repository.existsById(id)) {
             String message = NEWS_WITH_ID_NOT_FOUND + CANNOT_END + operation.getName();
@@ -104,6 +93,15 @@ public class NewsServiceImpl implements NewsService {
         News news = getNewsAndVerifyUserPermissions(id, user, Operation.DELETE);
         repository.delete(news);
         return new ModificationResponse(id, NEWS_DELETED);
+    }
+
+    private News getNewsById(long id, Operation operation) {
+        Optional<News> oNews = repository.findById(id);
+        if (oNews.isEmpty()) {
+            String message = NEWS_WITH_ID_NOT_FOUND + CANNOT_END + operation.getName();
+            throw new NotFoundException(message, id, ErrorCode.NEWS_NOT_FOUND);
+        }
+        return oNews.get();
     }
 
     private News getNewsAndVerifyUserPermissions(long id, AuthenticatedUser user, Operation operation) {

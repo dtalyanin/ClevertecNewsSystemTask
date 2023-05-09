@@ -13,7 +13,6 @@ import ru.clevertec.nms.exceptions.ErrorCode;
 import ru.clevertec.nms.exceptions.NotFoundException;
 import ru.clevertec.nms.models.AuthenticatedUser;
 import ru.clevertec.nms.models.Comment;
-import ru.clevertec.nms.models.News;
 import ru.clevertec.nms.models.Operation;
 import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.services.CommentsService;
@@ -68,16 +67,15 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public ModificationResponse addComment(long newsId, ModificationCommentDto dto, AuthenticatedUser user) {
-        News news = newsService.getNewsById(newsId, Operation.ADD);
+    public CommentDto addComment(long newsId, ModificationCommentDto dto, AuthenticatedUser user) {
+       newsService.checkNewsWithIdNotExist(newsId, Operation.ADD);
         Comment comment = mapper.convertModificationDtoToComment(dto, user.getUsername());
-        news.addComment(comment);
         repository.save(comment);
-        return new ModificationResponse(comment.getId(), COMMENT_ADDED);
+        return ;
     }
 
     @Override
-    public ModificationResponse updateComment(long newsId,
+    public CommentDto updateComment(long newsId,
                                               long commentId,
                                               ModificationCommentDto dto,
                                               AuthenticatedUser user) {
@@ -85,25 +83,27 @@ public class CommentsServiceImpl implements CommentsService {
         Comment comment = getCommentAndVerifyUserPermissions(commentId, user, Operation.UPDATE);
         mapper.updateComment(comment, dto);
         repository.save(comment);
-        return new ModificationResponse(commentId, COMMENT_UPDATED);
+        return mapper.convertCommentToDto(comment);
     }
 
     @Override
-    public ModificationResponse deleteCommentById(long newsId, long commentId, AuthenticatedUser user) {
-        News news = newsService.getNewsById(newsId, Operation.DELETE);
+    public void deleteCommentById(long newsId, long commentId, AuthenticatedUser user) {
+        newsService.checkNewsWithIdNotExist(newsId, Operation.DELETE);
         Comment comment = getCommentAndVerifyUserPermissions(commentId, user, Operation.DELETE);
-        news.deleteComment(comment);
         repository.delete(comment);
-        return new ModificationResponse(commentId, COMMENT_DELETED);
+    }
+
+    private Comment getCommentById(long id, Operation operation) {
+        Optional<Comment> oComment = repository.findById(id);
+        if (oComment.isEmpty()) {
+            String message = COMMENT_NOT_FOUND + CANNOT_END + operation.getName();
+            throw new NotFoundException(message, id, ErrorCode.COMMENT_NOT_FOUND);
+        }
+        return oComment.get();
     }
 
     private Comment getCommentAndVerifyUserPermissions(long commentId, AuthenticatedUser user, Operation operation) {
-        Optional<Comment> oComment = repository.findById(commentId);
-        if (oComment.isEmpty()) {
-            String message = COMMENT_NOT_FOUND + CANNOT_END + operation.getName();
-            throw new NotFoundException(message, commentId, ErrorCode.COMMENT_NOT_FOUND);
-        }
-        Comment comment = oComment.get();
+        Comment comment = getCommentById(commentId, operation);
         if (checkUserCannotPerformOperation(user, comment.getUsername())) {
             String message = NOT_COMMENT_OWNER + CANNOT_END + operation.getName();
             throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_MODIFICATION_COMMENT);

@@ -44,13 +44,4 @@ public class News implements BaseEntity<Long> {
     public void addTimeOfCreation() {
         this.time = LocalDateTime.now();
     }
-
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        comment.setNews(this);
-    }
-
-    public void deleteComment(Comment comment) {
-        this.comments.remove(comment);
-    }
 }
