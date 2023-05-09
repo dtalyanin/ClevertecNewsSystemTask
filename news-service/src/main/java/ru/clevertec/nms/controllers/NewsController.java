@@ -2,8 +2,6 @@ package ru.clevertec.nms.controllers;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,8 +15,8 @@ import ru.clevertec.nms.services.NewsService;
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.nms.utils.SecurityHelper.*;
-import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
+import static ru.clevertec.nms.utils.SecurityHelper.getAuthenticatedUserFromSecurityContext;
+import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController
 @RequestMapping("/news")
@@ -39,6 +37,12 @@ public class NewsController {
     }
 
     @GetMapping("/{id}")
+    public ResponseEntity<NewsDto> getNewsById(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        return ResponseEntity.ok(service.getNewsById(id));
+    }
+
+    @GetMapping("/{id}/comments")
     public ResponseEntity<NewsDto> getNewsByIdWithCommentsPagination(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, Pageable pageable) {
         return ResponseEntity.ok(service.getNewsByIdWithCommentsPagination(id, pageable));
@@ -46,7 +50,8 @@ public class NewsController {
 
     @PostMapping
     public ResponseEntity<ModificationResponse> addNews(@RequestBody ModificationNewsDto dto) {
-        ModificationResponse response = service.addNews(dto, getAuthenticatedUserFromSecurityContext());
+        NewsDto createdDto = service.addNews(dto, getAuthenticatedUserFromSecurityContext());
+        ModificationResponse response = new ModificationResponse(createdDto.getId(), NEWS_ADDED);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -58,12 +63,16 @@ public class NewsController {
     public ResponseEntity<ModificationResponse> updateNews(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
             @RequestBody ModificationNewsDto dto) {
-        return ResponseEntity.ok(service.updateNews(id, dto, getAuthenticatedUserFromSecurityContext()));
+        NewsDto updatedDto = service.updateNews(id, dto, getAuthenticatedUserFromSecurityContext());
+        ModificationResponse response = new ModificationResponse(updatedDto.getId(), NEWS_UPDATED);
+        return ResponseEntity.ok(response);
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<ModificationResponse> deleteNewsById(
-//            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
-//        return ResponseEntity.ok(service.deleteNewsById(id, getAuthenticatedUserFromSecurityContext()));
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ModificationResponse> deleteNewsById(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        service.deleteNewsById(id, getAuthenticatedUserFromSecurityContext());
+        ModificationResponse response = new ModificationResponse(id, NEWS_DELETED);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -8,7 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.clevertec.nms.dto.comments.CommentDto;
-import ru.clevertec.nms.dto.comments.ModificationCommentDto;
+import ru.clevertec.nms.dto.comments.CreateCommentDto;
+import ru.clevertec.nms.dto.comments.UpdateCommentDto;
 import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.services.CommentsService;
 
@@ -19,7 +20,7 @@ import static ru.clevertec.nms.utils.SecurityHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController
-@RequestMapping("/news/{newsId}/comments")
+@RequestMapping("/comments")
 @RequiredArgsConstructor
 @Validated
 public class CommentsController {
@@ -27,53 +28,45 @@ public class CommentsController {
     private final CommentsService service;
 
     @GetMapping
-    public ResponseEntity<List<CommentDto>> getCommentsByNewsIdWithPagination(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId, Pageable pageable) {
-        System.out.println(newsId);
-        return ResponseEntity.ok(service.getCommentsByNewsIdWithPagination(newsId, pageable));
-    }
-
-    @GetMapping("/{commentId}")
-    public ResponseEntity<CommentDto> getCommentByIdAndNewsId(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long commentId) {
-        return ResponseEntity.ok(service.getCommentByIdAndNewsId(newsId, commentId));
+    public ResponseEntity<List<CommentDto>> getCommentsWithPagination(Pageable pageable) {
+        return ResponseEntity.ok(service.getCommentsWithPagination(pageable));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<CommentDto>> getAllSearchedCommentsByNewsIdWithPagination(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
-            CommentDto dto,
-            Pageable pageable) {
-        return ResponseEntity.ok(service.getAllSearchedCommentsByNewsIdWithPagination(newsId, dto, pageable));
+    public ResponseEntity<List<CommentDto>> getAllSearchedCommentsWithPagination(CommentDto dto, Pageable pageable) {
+        return ResponseEntity.ok(service.getAllSearchedCommentsWithPagination(dto, pageable));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CommentDto> getCommentById(@PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        return ResponseEntity.ok(service.getCommentById(id));
+    }
+
+
     @PostMapping
-    public ResponseEntity<ModificationResponse> addComment(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
-            @RequestBody ModificationCommentDto dto) {
-        CommentDto commentDto = service.addComment(newsId, dto, getAuthenticatedUserFromSecurityContext());
+    public ResponseEntity<ModificationResponse> addComment(@RequestBody CreateCommentDto dto) {
+        CommentDto createdDto = service.addComment(dto, getAuthenticatedUserFromSecurityContext());
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(1).toUri();
+                .buildAndExpand(createdDto.getId()).toUri();
         return ResponseEntity.created(uri).body(null);
     }
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateComment(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long commentId,
-            @RequestBody ModificationCommentDto dto) {
-        service.updateComment(newsId, commentId, dto, getAuthenticatedUserFromSecurityContext());
-        return ResponseEntity.ok(new ModificationResponse(commentId, COMMENT_UPDATED));
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
+            @RequestBody UpdateCommentDto dto) {
+        CommentDto updatedDto = service.updateComment(id, dto, getAuthenticatedUserFromSecurityContext());
+        ModificationResponse response = new ModificationResponse(updatedDto.getId(), COMMENT_DELETED);
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteCommentById(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long newsId,
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long commentId) {
-        service.deleteCommentById(newsId, commentId, getAuthenticatedUserFromSecurityContext());
-        return ResponseEntity.ok(new ModificationResponse(commentId, COMMENT_DELETED));
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        service.deleteCommentById(id, getAuthenticatedUserFromSecurityContext());
+        ModificationResponse response = new ModificationResponse(id, COMMENT_DELETED);
+        return ResponseEntity.ok(response);
     }
 }

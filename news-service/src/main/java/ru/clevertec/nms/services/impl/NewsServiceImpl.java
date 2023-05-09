@@ -1,6 +1,8 @@
 package ru.clevertec.nms.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +20,6 @@ import ru.clevertec.nms.models.AuthenticatedUser;
 import ru.clevertec.nms.models.Comment;
 import ru.clevertec.nms.models.News;
 import ru.clevertec.nms.models.Operation;
-import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.services.NewsService;
 import ru.clevertec.nms.utils.mappers.NewsMapper;
 
@@ -47,6 +48,7 @@ public class NewsServiceImpl implements NewsService {
         return mapper.convertAllNewsToDto(news);
     }
 
+
     @Override
     @Transactional(readOnly = true)
     public List<NewsDto> getAllSearchedNewsWithPagination(NewsDto dto, Pageable pageable) {
@@ -59,9 +61,16 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable("news")
+    @Cacheable(value = "news")
+    public NewsDto getNewsById(long id) {
+        News news = getNewsByIdIfExist(id, Operation.GET);
+        return mapper.convertNewsToDto(news);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public NewsWithCommentsDto getNewsByIdWithCommentsPagination(long id, Pageable pageable) {
-        News news = getNewsById(id, Operation.GET);
+        News news = getNewsByIdIfExist(id, Operation.GET);
         pageable = setPageableUnsorted(pageable);
         List<Comment> comments = commentsRepository.findAllByNewsId(id, pageable);
         return mapper.convertNewsToDtoWithComments(news, comments);
@@ -77,28 +86,30 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public ModificationResponse addNews(ModificationNewsDto dto, AuthenticatedUser user) {
+    @CachePut(value = "news", key = "#result.id")
+    public NewsDto addNews(ModificationNewsDto dto, AuthenticatedUser user) {
         News news = mapper.convertModificationDtoToNews(dto, user.getUsername());
         repository.save(news);
-        return new ModificationResponse(news.getId(), NEWS_ADDED);
+        return mapper.convertNewsToDto(news);
     }
 
     @Override
-    public ModificationResponse updateNews(long id, ModificationNewsDto dto, AuthenticatedUser user) {
+    @CachePut(value = "comments", key = "#result.id")
+    public NewsDto updateNews(long id, ModificationNewsDto dto, AuthenticatedUser user) {
         News news = getNewsAndVerifyUserPermissions(id, user, Operation.UPDATE);
         mapper.updateNews(news, dto);
         repository.save(news);
-        return new ModificationResponse(id, NEWS_UPDATED);
+        return mapper.convertNewsToDto(news);
     }
 
     @Override
-    public ModificationResponse deleteNewsById(long id, AuthenticatedUser user) {
+    @CacheEvict(value = "news", key = "#id")
+    public void deleteNewsById(long id, AuthenticatedUser user) {
         News news = getNewsAndVerifyUserPermissions(id, user, Operation.DELETE);
         repository.delete(news);
-        return new ModificationResponse(id, NEWS_DELETED);
     }
 
-    private News getNewsById(long id, Operation operation) {
+    private News getNewsByIdIfExist(long id, Operation operation) {
         Optional<News> oNews = repository.findById(id);
         if (oNews.isEmpty()) {
             String message = NEWS_WITH_ID_NOT_FOUND + CANNOT_END + operation.getName();
@@ -108,7 +119,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     private News getNewsAndVerifyUserPermissions(long id, AuthenticatedUser user, Operation operation) {
-        News news = getNewsById(id, operation);
+        News news = getNewsByIdIfExist(id, operation);
         if (checkUserCannotPerformOperation(user, news.getUsername())) {
             String message = NOT_NEWS_OWNER + CANNOT_END + operation.getName();
             throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_MODIFICATION_NEWS);

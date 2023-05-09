@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class NewsDto implements Serializable {
+    private Long id;
     private String title;
     private String text;
     private String username;
