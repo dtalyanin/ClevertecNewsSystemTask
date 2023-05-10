@@ -67,12 +67,13 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     @CachePut(value = "comments", key = "#result.id")
     public CommentDto addComment(CreateCommentDto dto, AuthenticatedUser user) {
-        Optional<News> oNews = newsRepository.findById(dto.getId());
+        Comment comment = mapper.convertCreateDtoToComment(dto, user.getUsername());
+        Optional<News> oNews = newsRepository.findById(dto.getNewsId());
         if (oNews.isEmpty()) {
             String message = NEWS_WITH_ID_NOT_FOUND + CANNOT_END + Operation.ADD.getName();
-            throw new NotFoundException(message, dto.getId(), ErrorCode.NEWS_NOT_FOUND);
+            throw new NotFoundException(message, dto.getNewsId(), ErrorCode.NEWS_NOT_FOUND);
         }
-        Comment comment = mapper.convertCreateDtoToComment(dto, oNews.get(), user.getUsername());
+        comment.setNews(oNews.get());
         repository.save(comment);
         return mapper.convertCommentToDto(comment);
     }

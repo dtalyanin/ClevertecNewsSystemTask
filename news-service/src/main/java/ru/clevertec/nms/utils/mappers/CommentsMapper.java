@@ -15,9 +15,6 @@ public interface CommentsMapper {
     CommentDto convertCommentToDto(Comment comment);
     Comment convertDtoToComment(CommentDto dto);
     List<CommentDto> convertAllCommentsToDtos(List<Comment> comments);
-
-    Comment convertCreateDtoToComment(CreateCommentDto dto, News news, String username);
-    Comment convertUpdateDtoToComment(UpdateCommentDto dto, String username);
-
+    Comment convertCreateDtoToComment(CreateCommentDto dto, String username);
     void updateComment(@MappingTarget Comment comment, UpdateCommentDto dto);
 }

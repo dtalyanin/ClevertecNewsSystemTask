@@ -15,7 +15,7 @@ import ru.clevertec.nms.services.NewsService;
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.nms.utils.SecurityHelper.getAuthenticatedUserFromSecurityContext;
+import static ru.clevertec.nms.utils.SecurityHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController

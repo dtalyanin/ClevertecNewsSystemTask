@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateCommentDto {
-    private Long id;
+    private Long newsId;
     private String text;
 }
