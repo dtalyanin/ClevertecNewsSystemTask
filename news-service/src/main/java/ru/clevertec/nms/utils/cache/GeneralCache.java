@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+
 public class GeneralCache {
     private final Map<String, Cache<? extends Serializable>> caches;
 

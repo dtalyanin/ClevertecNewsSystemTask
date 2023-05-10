@@ -7,11 +7,10 @@ import ru.clevertec.uas.dao.UsersRepository;
 import ru.clevertec.uas.dto.CreateDto;
 import ru.clevertec.uas.dto.UpdateDto;
 import ru.clevertec.uas.dto.UserDto;
-import ru.clevertec.uas.dto.UserDtoWithPassword;
-import ru.clevertec.uas.exceptions.UserExistException;
-import ru.clevertec.uas.exceptions.UserNotFoundException;
+import ru.clevertec.uas.exceptions.*;
 import ru.clevertec.uas.models.User;
 import ru.clevertec.uas.models.responses.ModificationResponse;
+import ru.clevertec.uas.security.services.JwtService;
 import ru.clevertec.uas.services.UsersService;
 import ru.clevertec.uas.utils.mappers.UsersMapper;
 
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static ru.clevertec.uas.utils.constants.MessageConstants.*;
-import static ru.clevertec.uas.utils.constants.MessageConstants.USER_DELETED;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +25,8 @@ import static ru.clevertec.uas.utils.constants.MessageConstants.USER_DELETED;
 public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository repository;
+    private final JwtService jwtService;
     private final UsersMapper mapper;
-
 
     @Transactional(readOnly = true)
     @Override
@@ -41,22 +39,29 @@ public class UsersServiceImpl implements UsersService {
     public UserDto getUserById(long id) {
         Optional<User> oUser = repository.findById(id);
         if (oUser.isEmpty()) {
-            throw new UserNotFoundException(USER_ID_NOT_FOUND, id);
+            throw new UserNotFoundException(USER_ID_NOT_FOUND, id, ErrorCode.USER_ID_NOT_FOUND);
         }
         return mapper.convertUserToDto(oUser.get());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserDtoWithPassword getUserByUsername(String username) {
+    public UserDto getUserByToken(String token) {
+        String username = jwtService.extractUsername(token);
         Optional<User> oUser = repository.findByUsername(username);
-        return mapper.convertUserToDtoWithPassword(oUser.orElse(null));
+        if (oUser.isEmpty()) {
+            throw new AuthenticationException(INCORRECT_TOKEN_DATA, ErrorCode.TOKEN_INCORRECT_DATA);
+        }
+        if (jwtService.isTokenExpired(token)) {
+            throw new AuthenticationException(TOKEN_EXPIRED, ErrorCode.TOKEN_EXPIRED);
+        }
+        return mapper.convertUserToDto(oUser.get());
     }
 
     @Override
     public ModificationResponse addUser(CreateDto dto) {
         if (repository.existsByUsername(dto.getUsername())) {
-            throw new UserExistException(USER_EXIST, dto.getUsername());
+            throw new UserExistException(USER_EXIST, dto.getUsername(), ErrorCode.USER_EXIST);
         }
         User user = mapper.convertDtoToUser(dto);
         repository.save(user);
@@ -67,7 +72,7 @@ public class UsersServiceImpl implements UsersService {
     public ModificationResponse updateUser(long id, UpdateDto dto) {
         Optional<User> oUser = repository.findById(id);
         if (oUser.isEmpty()) {
-            throw new UserNotFoundException(USER_ID_NOT_FOUND + CANNOT_UPDATE_END, id);
+            throw new UserNotFoundException(USER_ID_NOT_FOUND + CANNOT_UPDATE_END, id, ErrorCode.USER_ID_NOT_FOUND);
         }
         User user = oUser.get();
         mapper.updateUser(user, dto);
@@ -79,9 +84,8 @@ public class UsersServiceImpl implements UsersService {
     public ModificationResponse deleteUserById(long id) {
         int deletedCount = repository.deleteById(id);
         if (deletedCount == 0) {
-            throw new UserNotFoundException(USER_ID_NOT_FOUND + CANNOT_DELETE_END, id);
+            throw new UserNotFoundException(USER_ID_NOT_FOUND + CANNOT_DELETE_END, id, ErrorCode.USER_ID_NOT_FOUND);
         }
         return new ModificationResponse(id, USER_DELETED);
     }
-
 }

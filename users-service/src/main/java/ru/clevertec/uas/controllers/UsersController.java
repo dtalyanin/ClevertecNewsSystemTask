@@ -11,14 +11,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.clevertec.uas.dto.CreateDto;
 import ru.clevertec.uas.dto.UpdateDto;
 import ru.clevertec.uas.dto.UserDto;
-import ru.clevertec.uas.dto.UserDtoWithPassword;
 import ru.clevertec.uas.models.responses.ModificationResponse;
 import ru.clevertec.uas.services.UsersService;
 
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.uas.utils.constants.MessageConstants.EMPTY_USERNAME;
+import static ru.clevertec.uas.utils.constants.MessageConstants.EMPTY_TOKEN;
 import static ru.clevertec.uas.utils.constants.MessageConstants.MIN_ID_MESSAGE;
 
 @RestController
@@ -40,10 +39,9 @@ public class UsersController {
         return ResponseEntity.ok(service.getUserById(id));
     }
 
-    @GetMapping("/full/{username}")
-    public ResponseEntity<UserDtoWithPassword> getUserWithPasswordByName(
-            @PathVariable @NotBlank(message = EMPTY_USERNAME) String username) {
-        return ResponseEntity.ok(service.getUserByUsername(username));
+    @GetMapping("/token/{token}")
+    public ResponseEntity<UserDto> getUserByToken(@PathVariable @NotBlank(message = EMPTY_TOKEN) String token) {
+        return ResponseEntity.ok(service.getUserByToken(token));
     }
 
     @PostMapping

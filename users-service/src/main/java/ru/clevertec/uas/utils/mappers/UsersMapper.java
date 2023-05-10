@@ -6,7 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.clevertec.uas.dto.CreateDto;
 import ru.clevertec.uas.dto.UpdateDto;
 import ru.clevertec.uas.dto.UserDto;
-import ru.clevertec.uas.dto.UserDtoWithPassword;
 import ru.clevertec.uas.models.User;
 
 import java.util.List;
@@ -23,7 +22,6 @@ public abstract class UsersMapper {
     private PasswordEncoder encoder;
 
     public abstract UserDto convertUserToDto(User user);
-    public abstract UserDtoWithPassword convertUserToDtoWithPassword(User user);
     public abstract List<UserDto> convertAllUsersToDtos(Iterable<User> users);
     @Mapping(source = PASSWORD_FIELD, target = PASSWORD_FIELD, qualifiedByName = ENCODE_PASSWORD_METHOD)
     public abstract void updateUser(@MappingTarget User user, UpdateDto dto);

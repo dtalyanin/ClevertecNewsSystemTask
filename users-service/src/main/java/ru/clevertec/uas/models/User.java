@@ -17,7 +17,7 @@ import static ru.clevertec.uas.utils.constants.MessageConstants.*;
 @ToString
 @Entity
 @Table(name = "users")
-public class User implements BaseEntity <Long> {
+public class User implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

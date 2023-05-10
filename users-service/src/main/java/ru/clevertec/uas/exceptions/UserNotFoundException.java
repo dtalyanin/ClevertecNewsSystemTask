@@ -4,10 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class UserNotFoundException extends IllegalArgumentException {
-    private final Object incorrectPath;
+    private final Object incorrectValue;
+    private final ErrorCode errorCode;
 
-    public UserNotFoundException(String s, Object incorrectPath) {
+    public UserNotFoundException(String s, Object incorrectValue, ErrorCode errorCode) {
         super(s);
-        this.incorrectPath = incorrectPath;
+        this.incorrectValue = incorrectValue;
+        this.errorCode = errorCode;
     }
 }

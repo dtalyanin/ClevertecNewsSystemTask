@@ -1,4 +1,4 @@
-package ru.clevertec.nms.controllers;
+package ru.clevertec.uas.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.nms.clients.dto.AuthenticationRequest;
-import ru.clevertec.nms.clients.dto.AuthenticationResponse;
-import ru.clevertec.nms.clients.services.AuthenticationService;
+import ru.clevertec.uas.dto.authentication.AuthenticationDto;
+import ru.clevertec.uas.dto.authentication.TokenDto;
+import ru.clevertec.uas.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
 @Validated
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthenticationController {
 
     private final AuthenticationService service;
 
     @PostMapping
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @Valid AuthenticationRequest authDto) {
-        return ResponseEntity.ok(service.authenticate(authDto));
+    public ResponseEntity<TokenDto> authenticate(@RequestBody @Valid AuthenticationDto dto) {
+        return ResponseEntity.ok(service.authenticate(dto));
     }
 }

@@ -16,6 +16,6 @@ public class UserHelper {
     }
 
     private boolean checkUserIsAdmin(AuthenticatedUser user) {
-        return user.getAuthorities().contains(Role.ADMIN.getNameWithPrefix());
+        return user.getRole() == Role.ADMIN;
     }
 }

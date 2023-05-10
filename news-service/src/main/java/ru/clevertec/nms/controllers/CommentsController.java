@@ -16,7 +16,6 @@ import ru.clevertec.nms.services.CommentsService;
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.nms.utils.SecurityHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController
@@ -45,7 +44,7 @@ public class CommentsController {
 
     @PostMapping
     public ResponseEntity<ModificationResponse> addComment(@RequestBody CreateCommentDto dto) {
-        CommentDto createdDto = service.addComment(dto, getAuthenticatedUserFromSecurityContext());
+        CommentDto createdDto = service.addComment(dto, null);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -57,7 +56,7 @@ public class CommentsController {
     public ResponseEntity<ModificationResponse> updateComment(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
             @RequestBody UpdateCommentDto dto) {
-        CommentDto updatedDto = service.updateComment(id, dto, getAuthenticatedUserFromSecurityContext());
+        CommentDto updatedDto = service.updateComment(id, dto, null);
         ModificationResponse response = new ModificationResponse(updatedDto.getId(), COMMENT_DELETED);
         return ResponseEntity.ok(response);
     }
@@ -65,7 +64,7 @@ public class CommentsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteCommentById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
-        service.deleteCommentById(id, getAuthenticatedUserFromSecurityContext());
+        service.deleteCommentById(id, null);
         ModificationResponse response = new ModificationResponse(id, COMMENT_DELETED);
         return ResponseEntity.ok(response);
     }

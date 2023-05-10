@@ -1,4 +1,4 @@
-package ru.clevertec.nms.configs;
+package ru.clevertec.uas.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.clevertec.nms.clients.dto.Permission;
-import ru.clevertec.nms.security.JwtFilter;
+import ru.clevertec.uas.models.Role;
+import ru.clevertec.uas.security.filters.JwtFilter;
 
 import static org.springframework.http.HttpMethod.*;
 
@@ -30,15 +30,15 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
     @Bean
@@ -53,24 +53,15 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
 
-                .requestMatchers(
-                         "/auth/**"
-                )
+                .requestMatchers("/auth/**")
                 .permitAll()
 
-                .requestMatchers(GET, "/news/**")
+                .requestMatchers(GET, "/**")
                 .permitAll()
-
-                .requestMatchers(POST, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
-                .requestMatchers(PATCH, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
-                .requestMatchers(DELETE, "/news/*").hasAuthority(Permission.NEWS_MANAGE.name())
-
-                .requestMatchers(POST, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
-                .requestMatchers(PATCH, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
-                .requestMatchers(DELETE, "/news/*/comments/**").hasAuthority(Permission.COMMENTS_MENAGE.name())
 
                 .anyRequest()
-                .authenticated()
+                .hasRole(Role.ADMIN.name())
+
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
