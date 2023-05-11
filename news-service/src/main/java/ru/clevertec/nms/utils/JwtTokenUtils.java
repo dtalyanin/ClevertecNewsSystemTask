@@ -1,10 +1,12 @@
 package ru.clevertec.nms.utils;
 
+import lombok.experimental.UtilityClass;
 import ru.clevertec.nms.exceptions.ErrorCode;
 import ru.clevertec.nms.exceptions.TokenException;
 
 import static ru.clevertec.nms.utils.constants.MessageConstants.INCORRECT_TOKEN;
 
+@UtilityClass
 public class JwtTokenUtils {
     private static final String BEARER_PREFIX = "Bearer ";
 

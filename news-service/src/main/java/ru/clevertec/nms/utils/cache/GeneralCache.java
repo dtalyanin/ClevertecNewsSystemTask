@@ -16,8 +16,8 @@ public class GeneralCache {
         this.caches = new HashMap<>();
         Cache<NewsDto> cacheNews = CacheFactory.getCacheImplementation(NewsDto.class);
         Cache<CommentDto> cacheComment = CacheFactory.getCacheImplementation(CommentDto.class);
-        caches.put("news", cacheNews);
-        caches.put("comments", cacheComment);
+//        caches.put("news", cacheNews);
+//        caches.put("comments", cacheComment);
     }
 
     public Object get(String source, long key) {

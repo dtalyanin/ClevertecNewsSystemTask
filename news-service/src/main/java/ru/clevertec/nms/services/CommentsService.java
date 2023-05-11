@@ -15,4 +15,6 @@ public interface CommentsService {
     CommentDto addComment(CreateCommentDto dto, AuthenticatedUser user);
     CommentDto updateComment(long id, UpdateCommentDto dto, AuthenticatedUser user);
     void deleteCommentById(long id, AuthenticatedUser user);
+    List<Long> deleteIds(List<Long> newsID);
+    public void deleteIds(Long id) ;
 }

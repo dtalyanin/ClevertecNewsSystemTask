@@ -1,4 +1,6 @@
 spring:
+  jackson:
+
   jpa:
     open-in-view: false
     show-sql: true
@@ -41,7 +43,7 @@ logging:
         orm:
           jpa: DEBUG
         transaction: DEBUG
-
+        cache: TRACE
         security: DEBUG
 
 cache:

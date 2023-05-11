@@ -5,9 +5,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.nms.configs.CustomKey;
 import ru.clevertec.nms.dao.CommentsRepository;
 import ru.clevertec.nms.dao.NewsRepository;
 import ru.clevertec.nms.dto.comments.CommentDto;
@@ -93,6 +95,21 @@ public class CommentsServiceImpl implements CommentsService {
         Comment comment = getCommentAndVerifyUserPermissions(id, user, Operation.DELETE);
         repository.delete(comment);
     }
+
+    @Override
+//    @CacheEvict(value = "comments", keyGenerator = "customKey")
+    public List<Long> deleteIds(List<Long> newsID) {
+        newsID.stream().forEach(this::deleteIds);
+        repository.deleteAllById(newsID);
+        return newsID;
+    }
+
+
+    @CacheEvict(value = "comments")
+    public void deleteIds(Long id) {
+
+    }
+
 
     private Comment getCommentByIdIfExist(long id, Operation operation) {
         Optional<Comment> oComment = repository.findById(id);

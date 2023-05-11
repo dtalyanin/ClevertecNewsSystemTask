@@ -14,71 +14,71 @@ import java.util.Arrays;
 /**
  * Aspect that intercepts calls to the products DAO and implements work with the cache
  */
-@Aspect
-@Component
-public class CacheAspect {
-
-//    private final Cache<NewsDto> cache = new LFUCache<>(10);
-    private GeneralCache generalCache = new GeneralCache();
-
-    /**
-     * Intercepts calls getProductById and look in the cache, if there is no data then get the object
-     * from the DAO, save it in the cache and return
-     *
-     * @param jp exposes the proceed(..) method in order to support around advice in @AJ aspects
-     * @param id product ID to search
-     * @return product with specified id
-     * @throws Throwable if the invoked proceed throws anything
-     */
-    @Around("@annotation(cacheable) && args(id)")
-    public Object getProduct(ProceedingJoinPoint jp, long id, Cacheable cacheable) throws Throwable {
-        String cacheType = cacheable.value()[0];
-        System.out.println(jp.getTarget().getClass());
-//        Object[] args = jp.getArgs();
-//        Arrays.stream(args).forEach(o -> System.out.println(1 + " " + o));
-//        long id = (long) args[0];
-        Object object = generalCache.get(cacheType, id);
-        if (object == null) {
-            object = (NewsDto) jp.proceed(new Object[]{id});
-            generalCache.put("news", id, object);
-        }
-        return object;
-    }
-
-    /**
-     * Save product in DAO and then save in the cache
-     *
-     * @param product product to add
-     * @param id      generated ID for new product
-     */
-//    @AfterReturning(pointcut = "execution(* ru.clevertec.task.dao.impl.ProductDAOImpl.addNewProduct(..)) " +
-//            "&& args(product)", returning = "id", argNames = "product, id")
-//    public void addProduct(Product product, int id) {
-//        product.setId(id);
-//        cache.put(id, product);
+//@Aspect
+//@Component
+//public class CacheAspect {
+//
+////    private final Cache<NewsDto> cache = new LFUCache<>(10);
+//    private GeneralCache generalCache = new GeneralCache();
+//
+//    /**
+//     * Intercepts calls getProductById and look in the cache, if there is no data then get the object
+//     * from the DAO, save it in the cache and return
+//     *
+//     * @param jp exposes the proceed(..) method in order to support around advice in @AJ aspects
+//     * @param id product ID to search
+//     * @return product with specified id
+//     * @throws Throwable if the invoked proceed throws anything
+//     */
+//    @Around("@annotation(cacheable) && args(id)")
+//    public Object getProduct(ProceedingJoinPoint jp, long id, Cacheable cacheable) throws Throwable {
+//        String cacheType = cacheable.value()[0];
+//        System.out.println(jp.getTarget().getClass());
+////        Object[] args = jp.getArgs();
+////        Arrays.stream(args).forEach(o -> System.out.println(1 + " " + o));
+////        long id = (long) args[0];
+//        Object object = generalCache.get(cacheType, id);
+//        if (object == null) {
+//            object = (NewsDto) jp.proceed(new Object[]{id});
+//            generalCache.put("news", id, object);
+//        }
+//        return object;
 //    }
 //
 //    /**
-//     * Update product fields with specified ID and then update product in the cache
+//     * Save product in DAO and then save in the cache
 //     *
-//     * @param id      product ID to update
-//     * @param product product with new values for update
+//     * @param product product to add
+//     * @param id      generated ID for new product
 //     */
-//    @AfterReturning(pointcut = "execution(* ru.clevertec.task.dao.impl.ProductDAOImpl.updateProduct(..)) " +
-//            "&& args(id, product)", argNames = "id, product")
-//    public void updateProduct(int id, Product product) {
-//        product.setId(id);
-//        cache.put(id, product);
-//    }
-//
-//    /**
-//     * Delete product with specified ID in DAO and in the cache
-//     *
-//     * @param id product ID to delete
-//     */
-//    @AfterReturning(pointcut = "execution(* ru.clevertec.task.dao.impl.ProductDAOImpl.deleteProductById(..)) " +
-//            "&& args(id)", argNames = "id")
-//    public void deleteProduct(int id) {
-//        cache.delete(id);
-//    }
-}
+////    @AfterReturning(pointcut = "execution(* ru.clevertec.task.dao.impl.ProductDAOImpl.addNewProduct(..)) " +
+////            "&& args(product)", returning = "id", argNames = "product, id")
+////    public void addProduct(Product product, int id) {
+////        product.setId(id);
+////        cache.put(id, product);
+////    }
+////
+////    /**
+////     * Update product fields with specified ID and then update product in the cache
+////     *
+////     * @param id      product ID to update
+////     * @param product product with new values for update
+////     */
+////    @AfterReturning(pointcut = "execution(* ru.clevertec.task.dao.impl.ProductDAOImpl.updateProduct(..)) " +
+////            "&& args(id, product)", argNames = "id, product")
+////    public void updateProduct(int id, Product product) {
+////        product.setId(id);
+////        cache.put(id, product);
+////    }
+////
+////    /**
+////     * Delete product with specified ID in DAO and in the cache
+////     *
+////     * @param id product ID to delete
+////     */
+////    @AfterReturning(pointcut = "execution(* ru.clevertec.task.dao.impl.ProductDAOImpl.deleteProductById(..)) " +
+////            "&& args(id)", argNames = "id")
+////    public void deleteProduct(int id) {
+////        cache.delete(id);
+////    }
+//}

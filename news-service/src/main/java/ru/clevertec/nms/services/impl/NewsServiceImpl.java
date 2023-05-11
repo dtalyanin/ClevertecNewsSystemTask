@@ -23,6 +23,7 @@ import ru.clevertec.nms.models.Operation;
 import ru.clevertec.nms.services.NewsService;
 import ru.clevertec.nms.utils.mappers.NewsMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,7 +109,13 @@ public class NewsServiceImpl implements NewsService {
     @CacheEvict(value = "news", key = "#id")
     public void deleteNewsById(long id, AuthenticatedUser user) {
         News news = getNewsAndVerifyUserPermissions(id, user, Operation.DELETE);
+        repository.deleteAll();
         repository.delete(news);
+    }
+
+    @CacheEvict(value = "news", key = "#result.forEach(List::get())")
+    public List<Long> delete() {
+        return new ArrayList<>();
     }
 
     private News getNewsByIdIfExist(long id, Operation operation) {
