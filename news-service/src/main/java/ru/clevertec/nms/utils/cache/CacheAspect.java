@@ -18,7 +18,8 @@ import java.util.Arrays;
 @Component
 public class CacheAspect {
 
-    private final Cache<NewsDto> cache = new LFUCache<>(10);
+//    private final Cache<NewsDto> cache = new LFUCache<>(10);
+    private GeneralCache generalCache = new GeneralCache();
 
     /**
      * Intercepts calls getProductById and look in the cache, if there is no data then get the object
@@ -30,17 +31,18 @@ public class CacheAspect {
      * @throws Throwable if the invoked proceed throws anything
      */
     @Around("@annotation(cacheable) && args(id)")
-    public NewsDto getProduct(ProceedingJoinPoint jp, long id, Cacheable cacheable) throws Throwable {
+    public Object getProduct(ProceedingJoinPoint jp, long id, Cacheable cacheable) throws Throwable {
         String cacheType = cacheable.value()[0];
+        System.out.println(jp.getTarget().getClass());
 //        Object[] args = jp.getArgs();
 //        Arrays.stream(args).forEach(o -> System.out.println(1 + " " + o));
 //        long id = (long) args[0];
-        NewsDto news = cache.get((int) id);
-        if (news == null) {
-            news = (NewsDto) jp.proceed(new Object[]{id});
-            cache.put(Math.toIntExact(news.getId()), news);
+        Object object = generalCache.get(cacheType, id);
+        if (object == null) {
+            object = (NewsDto) jp.proceed(new Object[]{id});
+            generalCache.put("news", id, object);
         }
-        return news;
+        return object;
     }
 
     /**

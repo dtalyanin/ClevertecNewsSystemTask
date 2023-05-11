@@ -12,7 +12,7 @@ public interface Cache<T> {
      * @param key value ID to search
      * @return value - if a value with the specified ID exists or else null
      */
-    T get(int key);
+    T get(long key);
 
     /**
      * Put value in cache with the specified ID
@@ -20,12 +20,12 @@ public interface Cache<T> {
      * @param key   value ID to add
      * @param value value to add
      */
-    void put(int key, T value);
+    void put(long key, T value);
 
     /**
      * Delete value from cache with the specified ID
      *
      * @param key value ID to delete
      */
-    void delete(int key);
+    void delete(long key);
 }

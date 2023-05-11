@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+    INCORRECT_TOKEN(403),
     NEWS_NOT_FOUND(40401),
     COMMENT_NOT_FOUND(40402),
     INVALID_FIELD_VALUE(40000),

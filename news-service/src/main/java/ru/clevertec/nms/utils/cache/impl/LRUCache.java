@@ -1,21 +1,19 @@
 package ru.clevertec.nms.utils.cache.impl;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import ru.clevertec.nms.utils.cache.Cache;
-
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class LRUCache<T> implements Cache<T> {
 
-    private final int capacity;
-    private final Map<Integer, Node<T>> elements;
+    private final long capacity;
+    private final Map<Long, Node<T>> elements;
     private final Node<T> head;
     private final Node<T> tail;
 
-    public LRUCache(@Value("${cache.capacity}") int capacity) {
+    public LRUCache(@Value("${cache.capacity}") long capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Capacity for cache should be more than 0, but was " + capacity);
         }
@@ -37,7 +35,7 @@ public class LRUCache<T> implements Cache<T> {
      * @return value - if a value with the specified ID exists or else null
      */
     @Override
-    public T get(int key) {
+    public T get(long key) {
         Node<T> current = elements.get(key);
         T value = null;
         if (current != null) {
@@ -54,7 +52,7 @@ public class LRUCache<T> implements Cache<T> {
      * @param value value to add
      */
     @Override
-    public void put(int key, T value) {
+    public void put(long key, T value) {
         if (elements.containsKey(key)) {
             Node<T> current = elements.get(key);
             current.value = value;
@@ -76,7 +74,7 @@ public class LRUCache<T> implements Cache<T> {
      * @param key value ID to delete
      */
     @Override
-    public void delete(int key) {
+    public void delete(long key) {
         Node<T> removed = elements.remove(key);
         if (removed != null) {
             remove(removed);
@@ -122,7 +120,7 @@ public class LRUCache<T> implements Cache<T> {
      * @param <T> type that node should work with
      */
     private static class Node<T> {
-        int key;
+        long key;
         T value;
         Node<T> prev;
         Node<T> next;
@@ -130,7 +128,7 @@ public class LRUCache<T> implements Cache<T> {
         public Node() {
         }
 
-        public Node(int key, T value) {
+        public Node(long key, T value) {
             this.key = key;
             this.value = value;
         }

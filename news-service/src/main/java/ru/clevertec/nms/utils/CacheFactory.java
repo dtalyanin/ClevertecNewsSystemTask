@@ -10,8 +10,8 @@ import ru.clevertec.nms.utils.cache.impl.LRUCache;
 
 @Component
 public class CacheFactory {
-    @Value("${cache.type}")
-    private static String cacheChoice;
+
+    private static String cacheChoice = "lru";
 
     public static <T> Cache<T> getCacheImplementation(Class<T> tClass) {
         return switch (cacheChoice) {

@@ -5,6 +5,7 @@ public class MessageConstants {
     public static final String EMPTY_USER_NAME = "Username cannot be empty";
     public static final String EMPTY_PASSWORD = "Password cannot be empty";
     public static final String PASSWORD_MIN_LENGTH_ERROR = "Password must contain at least 8 characters";
+    public static final String INCORRECT_TOKEN = "Incorrect token structure";
 
     public static final String NEWS_ADDED = "News added successfully";
     public static final String NEWS_UPDATED = "News updated successfully";

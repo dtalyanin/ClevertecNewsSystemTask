@@ -42,6 +42,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable("news")
     public List<NewsDto> getAllNewsWithPagination(Pageable pageable) {
         pageable = setPageableUnsorted(pageable);
         List<News> news = repository.findAll(pageable).getContent();
@@ -64,6 +65,7 @@ public class NewsServiceImpl implements NewsService {
     @Cacheable(value = "news")
     public NewsDto getNewsById(long id) {
         News news = getNewsByIdIfExist(id, Operation.GET);
+
         return mapper.convertNewsToDto(news);
     }
 
