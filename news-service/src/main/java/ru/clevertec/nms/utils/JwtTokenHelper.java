@@ -7,10 +7,10 @@ import ru.clevertec.nms.exceptions.TokenException;
 import static ru.clevertec.nms.utils.constants.MessageConstants.INCORRECT_TOKEN;
 
 @UtilityClass
-public class JwtTokenUtils {
+public class JwtTokenHelper {
     private static final String BEARER_PREFIX = "Bearer ";
 
-    public String getJwtToken(String authHeader) {
+    public String getJwtTokenFromAuthHeader(String authHeader) {
         if (authHeader == null || authHeader.isBlank() || !authHeader.startsWith(BEARER_PREFIX)) {
             throw new TokenException(INCORRECT_TOKEN, ErrorCode.INCORRECT_TOKEN);
         }

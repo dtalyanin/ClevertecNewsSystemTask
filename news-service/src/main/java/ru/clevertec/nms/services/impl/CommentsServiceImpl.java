@@ -5,11 +5,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.nms.configs.CustomKey;
+import ru.clevertec.nms.clients.dto.Permission;
 import ru.clevertec.nms.dao.CommentsRepository;
 import ru.clevertec.nms.dao.NewsRepository;
 import ru.clevertec.nms.dto.comments.CommentDto;
@@ -28,8 +27,8 @@ import ru.clevertec.nms.utils.mappers.CommentsMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.clevertec.nms.utils.PageableHelper.*;
-import static ru.clevertec.nms.utils.SearchHelper.*;
+import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
+import static ru.clevertec.nms.utils.SearchHelper.getExample;
 import static ru.clevertec.nms.utils.UserHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
@@ -67,8 +66,17 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getCommentsByNewsId(long id, Pageable pageable) {
+        pageable = setPageableUnsorted(pageable);
+        List<Comment> comments = repository.findAllByNewsId(id, pageable);
+        return mapper.convertAllCommentsToDtos(comments);
+    }
+
+    @Override
     @CachePut(value = "comments", key = "#result.id")
     public CommentDto addComment(CreateCommentDto dto, AuthenticatedUser user) {
+        checkUserHasPermission(user, Operation.ADD);
         Comment comment = mapper.convertCreateDtoToComment(dto, user.getUsername());
         Optional<News> oNews = newsRepository.findById(dto.getNewsId());
         if (oNews.isEmpty()) {
@@ -97,19 +105,14 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-//    @CacheEvict(value = "comments", keyGenerator = "customKey")
-    public List<Long> deleteIds(List<Long> newsID) {
-        newsID.stream().forEach(this::deleteIds);
-        repository.deleteAllById(newsID);
-        return newsID;
+    public void deleteCommentsByNewsId(long id) {
+        repository.deleteByNewsId(id);
     }
 
-
+    @Override
     @CacheEvict(value = "comments")
-    public void deleteIds(Long id) {
-
+    public void triggerCacheEvict(long id) {
     }
-
 
     private Comment getCommentByIdIfExist(long id, Operation operation) {
         Optional<Comment> oComment = repository.findById(id);
@@ -121,11 +124,23 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     private Comment getCommentAndVerifyUserPermissions(long id, AuthenticatedUser user, Operation operation) {
+        checkUserHasPermission(user, operation);
         Comment comment = getCommentByIdIfExist(id, operation);
-        if (checkUserCannotPerformOperation(user, comment.getUsername())) {
-            String message = NOT_COMMENT_OWNER + CANNOT_END + operation.getName();
-            throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_MODIFICATION_COMMENT);
-        }
+        checkUserIsCommentOwner(user, comment, operation);
         return comment;
+    }
+
+    private void checkUserHasPermission(AuthenticatedUser user, Operation operation) {
+        if (checkUserHasNotPermission(user, Permission.COMMENTS_MENAGE)) {
+            String message = NOT_PERMISSIONS_FOR_MODIFICATION + CANNOT_END + operation.getName();
+            throw new AccessException(message, ErrorCode.NO_PERMISSIONS_FOR_COMMENT_MODIFICATION);
+        }
+    }
+
+    private void checkUserIsCommentOwner(AuthenticatedUser user, Comment comment, Operation operation) {
+        if (checkUserIsNotOwner(user, comment.getUsername())) {
+            String message = NOT_COMMENT_OWNER + CANNOT_END + operation.getName();
+            throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_COMMENT_MODIFICATION);
+        }
     }
 }

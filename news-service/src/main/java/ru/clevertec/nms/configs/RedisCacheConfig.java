@@ -12,23 +12,23 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 
-@Configuration
-@EnableCaching
-public class RedisCacheConfig {
-
-    @Bean
-    public RedisCacheConfiguration redisCacheConfiguration() {
-        ObjectMapper mapper = JsonMapper.builder()
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .findAndAddModules()
-                .build();
-        mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
-
-        return RedisCacheConfiguration
-                .defaultCacheConfig()
-                .disableCachingNullValues()
-                .entryTtl(Duration.ofMinutes(60))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
-    }
-}
+//@Configuration
+//@EnableCaching
+//public class RedisCacheConfig {
+//
+//    @Bean
+//    public RedisCacheConfiguration redisCacheConfiguration() {
+//        ObjectMapper mapper = JsonMapper.builder()
+//                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+//                .findAndAddModules()
+//                .build();
+//        mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
+//        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
+//
+//        return RedisCacheConfiguration
+//                .defaultCacheConfig()
+//                .disableCachingNullValues()
+//                .entryTtl(Duration.ofMinutes(60))
+//                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+//    }
+//}

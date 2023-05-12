@@ -150,4 +150,9 @@ public class LFUCache<T> implements Cache<T> {
             this.count = 1;
         }
     }
+
+    @Override
+    public String toString() {
+        return "LFUCache: " + elements;
+    }
 }

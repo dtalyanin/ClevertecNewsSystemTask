@@ -16,10 +16,13 @@ public class MessageConstants {
     public static final String COMMENT_DELETED = "Comment deleted successfully";
 
     public static final String NEWS_WITH_ID_NOT_FOUND = "News with ID not found in DB";
-    public static final String COMMENT_NOT_FOUND = "Comment with ID not found in DB for news with ID ";
+    public static final String COMMENT_NOT_FOUND = "Comment with ID not found in DB";
+    public static final String NOT_PERMISSIONS_FOR_MODIFICATION = "User hasn't permissions";
     public static final String NOT_NEWS_OWNER = "User not owner of this news";
     public static final String NOT_COMMENT_OWNER = "User not owner of this comment";
     public static final String USERNAME_NOT_FOUND = "User with name not found id DB";
+
+    public static final String HEADER_NOT_PRESENT = " required request header is not present";
 
     public static final String CANNOT_END = ": cannot ";
 }

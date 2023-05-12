@@ -8,8 +8,10 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.nms.clients.dto.Permission;
 import ru.clevertec.nms.dao.CommentsRepository;
 import ru.clevertec.nms.dao.NewsRepository;
+import ru.clevertec.nms.dto.comments.CommentDto;
 import ru.clevertec.nms.dto.news.ModificationNewsDto;
 import ru.clevertec.nms.dto.news.NewsDto;
 import ru.clevertec.nms.dto.news.NewsWithCommentsDto;
@@ -20,16 +22,17 @@ import ru.clevertec.nms.models.AuthenticatedUser;
 import ru.clevertec.nms.models.Comment;
 import ru.clevertec.nms.models.News;
 import ru.clevertec.nms.models.Operation;
+import ru.clevertec.nms.services.CommentsService;
 import ru.clevertec.nms.services.NewsService;
 import ru.clevertec.nms.utils.mappers.NewsMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.clevertec.nms.utils.PageableHelper.*;
-import static ru.clevertec.nms.utils.SearchHelper.*;
-import static ru.clevertec.nms.utils.UserHelper.*;
+import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
+import static ru.clevertec.nms.utils.SearchHelper.getExample;
+import static ru.clevertec.nms.utils.UserHelper.checkUserHasNotPermission;
+import static ru.clevertec.nms.utils.UserHelper.checkUserIsNotOwner;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @Service
@@ -38,12 +41,11 @@ import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 public class NewsServiceImpl implements NewsService {
 
     private final NewsRepository repository;
-    private final CommentsRepository commentsRepository;
     private final NewsMapper mapper;
+    private final CommentsService commentsService;
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable("news")
     public List<NewsDto> getAllNewsWithPagination(Pageable pageable) {
         pageable = setPageableUnsorted(pageable);
         List<News> news = repository.findAll(pageable).getContent();
@@ -66,7 +68,6 @@ public class NewsServiceImpl implements NewsService {
     @Cacheable(value = "news")
     public NewsDto getNewsById(long id) {
         News news = getNewsByIdIfExist(id, Operation.GET);
-
         return mapper.convertNewsToDto(news);
     }
 
@@ -74,8 +75,7 @@ public class NewsServiceImpl implements NewsService {
     @Transactional(readOnly = true)
     public NewsWithCommentsDto getNewsByIdWithCommentsPagination(long id, Pageable pageable) {
         News news = getNewsByIdIfExist(id, Operation.GET);
-        pageable = setPageableUnsorted(pageable);
-        List<Comment> comments = commentsRepository.findAllByNewsId(id, pageable);
+        List<CommentDto> comments = commentsService.getCommentsByNewsId(id, pageable);
         return mapper.convertNewsToDtoWithComments(news, comments);
     }
 
@@ -91,13 +91,14 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @CachePut(value = "news", key = "#result.id")
     public NewsDto addNews(ModificationNewsDto dto, AuthenticatedUser user) {
+        checkUserHasPermission(user, Operation.ADD);
         News news = mapper.convertModificationDtoToNews(dto, user.getUsername());
         repository.save(news);
         return mapper.convertNewsToDto(news);
     }
 
     @Override
-    @CachePut(value = "comments", key = "#result.id")
+    @CachePut(value = "news", key = "#result.id")
     public NewsDto updateNews(long id, ModificationNewsDto dto, AuthenticatedUser user) {
         News news = getNewsAndVerifyUserPermissions(id, user, Operation.UPDATE);
         mapper.updateNews(news, dto);
@@ -109,13 +110,10 @@ public class NewsServiceImpl implements NewsService {
     @CacheEvict(value = "news", key = "#id")
     public void deleteNewsById(long id, AuthenticatedUser user) {
         News news = getNewsAndVerifyUserPermissions(id, user, Operation.DELETE);
-        repository.deleteAll();
+        List<Long> commentsIds = news.getComments().stream().map(Comment::getId).toList();
+        commentsService.deleteCommentsByNewsId(news.getId());
         repository.delete(news);
-    }
-
-    @CacheEvict(value = "news", key = "#result.forEach(List::get())")
-    public List<Long> delete() {
-        return new ArrayList<>();
+        commentsIds.forEach(commentsService::triggerCacheEvict);
     }
 
     private News getNewsByIdIfExist(long id, Operation operation) {
@@ -128,11 +126,23 @@ public class NewsServiceImpl implements NewsService {
     }
 
     private News getNewsAndVerifyUserPermissions(long id, AuthenticatedUser user, Operation operation) {
+        checkUserHasPermission(user, operation);
         News news = getNewsByIdIfExist(id, operation);
-        if (checkUserCannotPerformOperation(user, news.getUsername())) {
-            String message = NOT_NEWS_OWNER + CANNOT_END + operation.getName();
-            throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_MODIFICATION_NEWS);
-        }
+        checkUserIsNewsOwner(user, news, operation);
         return news;
+    }
+
+    private void checkUserHasPermission(AuthenticatedUser user, Operation operation) {
+        if (checkUserHasNotPermission(user, Permission.NEWS_MANAGE)) {
+            String message = NOT_PERMISSIONS_FOR_MODIFICATION + CANNOT_END + operation.getName();
+            throw new AccessException(message, ErrorCode.NO_PERMISSIONS_FOR_NEWS_MODIFICATION);
+        }
+    }
+
+    private void checkUserIsNewsOwner(AuthenticatedUser user, News news, Operation operation) {
+        if (checkUserIsNotOwner(user, news.getUsername())) {
+            String message = NOT_NEWS_OWNER + CANNOT_END + operation.getName();
+            throw new AccessException(message, ErrorCode.NOT_OWNER_FOR_NEWS_MODIFICATION);
+        }
     }
 }

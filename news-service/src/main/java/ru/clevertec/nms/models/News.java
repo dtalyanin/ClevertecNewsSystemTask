@@ -35,7 +35,7 @@ public class News implements BaseEntity<Long> {
     private String username;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToMany(mappedBy="news", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="news")
     private List<Comment> comments = new ArrayList<>();
     @Column(name = "created_time", nullable = false)
     private LocalDateTime time;

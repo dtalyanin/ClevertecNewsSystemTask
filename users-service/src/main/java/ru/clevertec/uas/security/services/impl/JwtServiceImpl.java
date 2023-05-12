@@ -1,5 +1,6 @@
 package ru.clevertec.uas.security.services.impl;
 
+import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,11 +9,15 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.clevertec.uas.exceptions.AuthenticationException;
+import ru.clevertec.uas.exceptions.ErrorCode;
 import ru.clevertec.uas.security.services.JwtService;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
+
+import static ru.clevertec.uas.utils.constants.MessageConstants.INCORRECT_TOKEN_DATA;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -55,12 +60,16 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ClaimJwtException e) {
+            throw new AuthenticationException(e.getMessage(), ErrorCode.TOKEN_INCORRECT_DATA);
+        }
     }
 
     private Date extractExpiration(String token) {
