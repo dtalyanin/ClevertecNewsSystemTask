@@ -1,10 +1,12 @@
 package ru.clevertec.nms.utils.cache.impl;
 
-import org.springframework.beans.factory.annotation.Value;
+import ru.clevertec.nms.exceptions.CacheException;
 import ru.clevertec.nms.utils.cache.Cache;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static ru.clevertec.nms.utils.constants.MessageConstants.WRONG_CACHE_CAPACITY;
 
 public class LRUCache<T> implements Cache<T> {
 
@@ -13,9 +15,9 @@ public class LRUCache<T> implements Cache<T> {
     private final Node<T> head;
     private final Node<T> tail;
 
-    public LRUCache(@Value("${cache.capacity}") long capacity) {
+    public LRUCache(long capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Capacity for cache should be more than 0, but was " + capacity);
+            throw new CacheException(WRONG_CACHE_CAPACITY);
         }
 
         this.capacity = capacity;

@@ -1,10 +1,12 @@
 package ru.clevertec.nms.utils.cache.impl;
 
-import org.springframework.beans.factory.annotation.Value;
+import ru.clevertec.nms.exceptions.CacheException;
 import ru.clevertec.nms.utils.cache.Cache;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static ru.clevertec.nms.utils.constants.MessageConstants.WRONG_CACHE_CAPACITY;
 
 /**
  * Least Frequently Used (LFU) cache algorithm that keeps track of the number of times an item has been accessed.
@@ -20,9 +22,9 @@ public class LFUCache<T> implements Cache<T> {
     private final Node<T> head;
     private final Node<T> tail;
 
-    public LFUCache(@Value("${cache.capacity}") int capacity) {
+    public LFUCache(int capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Capacity for cache should be more than 0, but was " + capacity);
+            throw new CacheException(WRONG_CACHE_CAPACITY);
         }
 
         this.capacity = capacity;

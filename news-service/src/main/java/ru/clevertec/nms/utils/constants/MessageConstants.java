@@ -17,7 +17,7 @@ public class MessageConstants {
 
     public static final String NEWS_WITH_ID_NOT_FOUND = "News with ID not found in DB";
     public static final String COMMENT_NOT_FOUND = "Comment with ID not found in DB";
-    public static final String NOT_PERMISSIONS_FOR_MODIFICATION = "User hasn't permissions";
+    public static final String NOT_PERMISSIONS = "User hasn't permissions";
     public static final String NOT_NEWS_OWNER = "User not owner of this news";
     public static final String NOT_COMMENT_OWNER = "User not owner of this comment";
     public static final String USERNAME_NOT_FOUND = "User with name not found id DB";
@@ -25,4 +25,9 @@ public class MessageConstants {
     public static final String HEADER_NOT_PRESENT = " required request header is not present";
 
     public static final String CANNOT_END = ": cannot ";
+    public static final String WRONG_CACHE_CHOICE = "Wrong cache implementation (possible values are LFU and LRU)";
+    public static final String WRONG_CACHE_CAPACITY = "Capacity for cache should be more than 0";
+
+    public static final String FIELD_NOT_PRESENT = " is not present in ";
+    public static final String CANNOT_GET_FIELD_VALUE = " is not accessible in ";
 }

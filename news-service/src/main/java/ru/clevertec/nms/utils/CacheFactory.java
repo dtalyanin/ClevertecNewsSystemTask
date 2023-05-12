@@ -1,23 +1,32 @@
 package ru.clevertec.nms.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.clevertec.nms.exceptions.CacheException;
 import ru.clevertec.nms.utils.cache.Cache;
 import ru.clevertec.nms.utils.cache.impl.LFUCache;
 import ru.clevertec.nms.utils.cache.impl.LRUCache;
 
+import static ru.clevertec.nms.utils.constants.MessageConstants.WRONG_CACHE_CAPACITY;
+import static ru.clevertec.nms.utils.constants.MessageConstants.WRONG_CACHE_CHOICE;
 
 @Component
 public class CacheFactory {
 
-    private static String cacheChoice = "lru";
+    @Value("${cache.type}")
+    private String implementation;
+    @Value("#${cache.capacity}")
+    private int capacity;
 
-    public static <T> Cache<T> getCacheImplementation(Class<T> tClass) {
-        return switch (cacheChoice) {
-            case "lru" -> new LRUCache<>(10);
-            case "lfu" -> new LFUCache<>(10);
-            default -> throw new IllegalArgumentException("aaa");
+    public <T> Cache<T> getCacheImplementation() {
+        if (capacity <= 0) {
+            throw new CacheException(WRONG_CACHE_CAPACITY);
+        }
+        implementation = implementation.toLowerCase();
+        return switch (implementation) {
+            case "lru" -> new LRUCache<>(capacity);
+            case "lfu" -> new LFUCache<>(capacity);
+            default -> throw new CacheException(WRONG_CACHE_CHOICE);
         };
     }
 }

@@ -132,7 +132,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     private void checkUserHasPermission(AuthenticatedUser user, Operation operation) {
         if (checkUserHasNotPermission(user, Permission.COMMENTS_MENAGE)) {
-            String message = NOT_PERMISSIONS_FOR_MODIFICATION + CANNOT_END + operation.getName();
+            String message = NOT_PERMISSIONS + CANNOT_END + operation.getName();
             throw new AccessException(message, ErrorCode.NO_PERMISSIONS_FOR_COMMENT_MODIFICATION);
         }
     }

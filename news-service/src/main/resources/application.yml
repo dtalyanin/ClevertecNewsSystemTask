@@ -1,5 +1,4 @@
 spring:
-  jackson:
 
   jpa:
     open-in-view: false
@@ -29,12 +28,6 @@ spring:
 
   liquibase:
     enabled: true
-  cloud:
-    openfeign:
-      client:
-        security:
-          loggerLevel: full
-
 
 logging:
   level:
@@ -46,5 +39,7 @@ logging:
         cache: TRACE
         security: DEBUG
 
+
 cache:
   type: lru
+  capacity: 5

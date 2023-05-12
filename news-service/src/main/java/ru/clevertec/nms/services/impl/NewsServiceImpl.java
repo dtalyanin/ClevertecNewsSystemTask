@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.nms.clients.dto.Permission;
-import ru.clevertec.nms.dao.CommentsRepository;
 import ru.clevertec.nms.dao.NewsRepository;
 import ru.clevertec.nms.dto.comments.CommentDto;
 import ru.clevertec.nms.dto.news.ModificationNewsDto;
@@ -31,8 +30,7 @@ import java.util.Optional;
 
 import static ru.clevertec.nms.utils.PageableHelper.setPageableUnsorted;
 import static ru.clevertec.nms.utils.SearchHelper.getExample;
-import static ru.clevertec.nms.utils.UserHelper.checkUserHasNotPermission;
-import static ru.clevertec.nms.utils.UserHelper.checkUserIsNotOwner;
+import static ru.clevertec.nms.utils.UserHelper.*;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @Service
@@ -134,7 +132,7 @@ public class NewsServiceImpl implements NewsService {
 
     private void checkUserHasPermission(AuthenticatedUser user, Operation operation) {
         if (checkUserHasNotPermission(user, Permission.NEWS_MANAGE)) {
-            String message = NOT_PERMISSIONS_FOR_MODIFICATION + CANNOT_END + operation.getName();
+            String message = NOT_PERMISSIONS + CANNOT_END + operation.getName();
             throw new AccessException(message, ErrorCode.NO_PERMISSIONS_FOR_NEWS_MODIFICATION);
         }
     }
