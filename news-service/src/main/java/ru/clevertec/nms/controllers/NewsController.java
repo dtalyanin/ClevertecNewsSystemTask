@@ -2,21 +2,25 @@ package ru.clevertec.nms.controllers;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.clevertec.nms.clients.services.UsersService;
 import ru.clevertec.nms.dto.news.ModificationNewsDto;
 import ru.clevertec.nms.dto.news.NewsDto;
+import ru.clevertec.nms.models.AuthenticatedUser;
 import ru.clevertec.nms.models.responses.ModificationResponse;
 import ru.clevertec.nms.services.NewsService;
 
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.nms.utils.SecurityHelper.*;
-import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
+import static ru.clevertec.nms.utils.JwtTokenHelper.*;
+import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController
 @RequestMapping("/news")
@@ -24,27 +28,38 @@ import static ru.clevertec.nms.utils.constants.MessageConstants.MIN_ID_MESSAGE;
 @Validated
 public class NewsController {
 
-    private final NewsService service;
+    private final NewsService newsService;
+    private final UsersService usersService;
 
     @GetMapping
     public ResponseEntity<List<NewsDto>> getAllNewsWithPagination(Pageable pageable) {
-        return ResponseEntity.ok(service.getAllNewsWithPagination(pageable));
+        return ResponseEntity.ok(newsService.getAllNewsWithPagination(pageable));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<NewsDto>> getAllSearchedNewsWithPagination(NewsDto dto, Pageable pageable) {
-        return ResponseEntity.ok(service.getAllSearchedNewsWithPagination(dto, pageable));
+        return ResponseEntity.ok(newsService.getAllSearchedNewsWithPagination(dto, pageable));
     }
 
     @GetMapping("/{id}")
+    public ResponseEntity<NewsDto> getNewsById(
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
+        return ResponseEntity.ok(newsService.getNewsById(id));
+    }
+
+    @GetMapping("/{id}/comments")
     public ResponseEntity<NewsDto> getNewsByIdWithCommentsPagination(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, Pageable pageable) {
-        return ResponseEntity.ok(service.getNewsByIdWithCommentsPagination(id, pageable));
+        return ResponseEntity.ok(newsService.getNewsByIdWithCommentsPagination(id, pageable));
     }
 
     @PostMapping
-    public ResponseEntity<ModificationResponse> addNews(@RequestBody ModificationNewsDto dto) {
-        ModificationResponse response = service.addNews(dto, getAuthenticatedUserFromSecurityContext());
+    public ResponseEntity<ModificationResponse> addNews(
+            @RequestBody ModificationNewsDto dto,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        AuthenticatedUser user = usersService.getUserByUsername(getJwtTokenFromAuthHeader(token));
+        NewsDto createdDto = newsService.addNews(dto, user);
+        ModificationResponse response = new ModificationResponse(createdDto.getId(), NEWS_ADDED);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -55,13 +70,21 @@ public class NewsController {
     @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateNews(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
             @RequestBody ModificationNewsDto dto) {
-        return ResponseEntity.ok(service.updateNews(id, dto, getAuthenticatedUserFromSecurityContext()));
+        AuthenticatedUser user = usersService.getUserByUsername(getJwtTokenFromAuthHeader(token));
+        NewsDto updatedDto = newsService.updateNews(id, dto, user);
+        ModificationResponse response = new ModificationResponse(updatedDto.getId(), NEWS_UPDATED);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteNewsById(
-            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
-        return ResponseEntity.ok(service.deleteNewsById(id, getAuthenticatedUserFromSecurityContext()));
+            @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        AuthenticatedUser user = usersService.getUserByUsername(getJwtTokenFromAuthHeader(token));
+        newsService.deleteNewsById(id, user);
+        ModificationResponse response = new ModificationResponse(id, NEWS_DELETED);
+        return ResponseEntity.ok(response);
     }
 }

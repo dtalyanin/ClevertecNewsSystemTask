@@ -3,6 +3,6 @@ package ru.clevertec.nms.dto.comments;
 import lombok.Data;
 
 @Data
-public class ModificationCommentDto {
+public class UpdateCommentDto {
     private String text;
 }

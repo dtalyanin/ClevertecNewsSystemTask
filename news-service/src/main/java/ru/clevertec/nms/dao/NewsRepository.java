@@ -6,5 +6,4 @@ import ru.clevertec.nms.models.News;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long> {
-
 }

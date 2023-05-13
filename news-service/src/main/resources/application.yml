@@ -1,4 +1,5 @@
 spring:
+
   jpa:
     open-in-view: false
     show-sql: true
@@ -6,12 +7,19 @@ spring:
       hibernate:
         format_sql: true
 
+  cache:
+    type: redis
 
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 100
+        one-indexed-parameters: true
+
+    redis:
+      host: localhost
+      port: 6379
 
   datasource:
     username: postgres
@@ -20,12 +28,6 @@ spring:
 
   liquibase:
     enabled: true
-  cloud:
-    openfeign:
-      client:
-        security:
-          loggerLevel: full
-
 
 logging:
   level:
@@ -34,7 +36,10 @@ logging:
         orm:
           jpa: DEBUG
         transaction: DEBUG
-
+        cache: TRACE
         security: DEBUG
 
 
+cache:
+  type: lru
+  capacity: 5

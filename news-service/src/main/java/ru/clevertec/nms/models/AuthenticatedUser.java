@@ -2,6 +2,7 @@ package ru.clevertec.nms.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.clevertec.nms.clients.dto.Role;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthenticatedUser {
     private String username;
-    private List<String> authorities;
+    private Role role;
 }

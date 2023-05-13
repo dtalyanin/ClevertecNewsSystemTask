@@ -1,6 +1,10 @@
 server:
   port: 8090
 
+jwt:
+  secret-key: 586E327235753778214125442A472D4B6150645367566B597033733676397924
+  lifetime: 86400000
+
 spring:
   jpa:
     open-in-view: false
@@ -16,11 +20,3 @@ spring:
 
   liquibase:
     enabled: true
-
-logging:
-  level:
-    org:
-      springframework:
-        orm:
-          jpa: DEBUG
-        transaction: DEBUG
