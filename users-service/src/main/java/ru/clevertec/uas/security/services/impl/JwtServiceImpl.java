@@ -9,15 +9,14 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.clevertec.uas.exceptions.AuthenticationException;
-import ru.clevertec.uas.exceptions.ErrorCode;
+import ru.clevertec.exceptions.exceptions.AuthenticationException;
+import ru.clevertec.exceptions.exceptions.TokenException;
+import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.uas.security.services.JwtService;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
-
-import static ru.clevertec.uas.utils.constants.MessageConstants.INCORRECT_TOKEN_DATA;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -68,7 +67,7 @@ public class JwtServiceImpl implements JwtService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ClaimJwtException e) {
-            throw new AuthenticationException(e.getMessage(), ErrorCode.TOKEN_INCORRECT_DATA);
+            throw new TokenException(e.getMessage(), ErrorCode.TOKEN_INCORRECT_DATA);
         }
     }
 

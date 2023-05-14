@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.nms.exceptions.FieldException;
 
@@ -22,6 +23,7 @@ import static ru.clevertec.nms.utils.constants.MessageConstants.FIELD_NOT_PRESEN
 @Aspect
 @Component
 @RequiredArgsConstructor
+@Profile("dev")
 public class CacheAspect {
 
     private static final int CACHE_NAME_INDEX = 0;

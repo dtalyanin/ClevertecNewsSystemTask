@@ -1,6 +1,7 @@
 package ru.clevertec.nms.utils;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.nms.exceptions.CacheException;
 import ru.clevertec.nms.utils.cache.Cache;
@@ -11,6 +12,7 @@ import static ru.clevertec.nms.utils.constants.MessageConstants.WRONG_CACHE_CAPA
 import static ru.clevertec.nms.utils.constants.MessageConstants.WRONG_CACHE_CHOICE;
 
 @Component
+@Profile("dev")
 public class CacheFactory {
 
     @Value("${cache.type}")

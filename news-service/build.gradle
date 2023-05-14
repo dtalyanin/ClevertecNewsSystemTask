@@ -22,6 +22,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 
