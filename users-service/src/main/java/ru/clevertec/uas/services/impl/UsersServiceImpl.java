@@ -53,7 +53,7 @@ public class UsersServiceImpl implements UsersService {
         String username = jwtService.extractUsername(token);
         Optional<User> oUser = repository.findByUsername(username);
         if (oUser.isEmpty()) {
-            throw new TokenException(INCORRECT_TOKEN_DATA, ErrorCode.TOKEN_INCORRECT_DATA);
+            throw new TokenException(TOKEN_NOT_VALID, ErrorCode.TOKEN_NOT_VALID);
         }
         jwtService.isTokenExpired(token);
         return mapper.convertUserToDto(oUser.get());

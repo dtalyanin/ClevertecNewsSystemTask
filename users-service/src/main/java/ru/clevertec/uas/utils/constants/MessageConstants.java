@@ -13,7 +13,7 @@ public class MessageConstants {
     public static final String USER_ID_NOT_FOUND = "User with ID not found id DB";
     public static final String USER_EXIST = "User with similar username already exist in DB";
 
-    public static final String INCORRECT_TOKEN_DATA = "Token has incorrect validated data";
+    public static final String TOKEN_NOT_VALID = "Token not valid";
     public static final String INCORRECT_AUTH_DATA = "Incorrect username or password";
 
     public static final String MIN_ID_MESSAGE = "Min ID value is 1";

@@ -1,11 +1,14 @@
 package ru.clevertec.uas.security.filters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.clevertec.exceptions.exceptions.TokenException;
+import ru.clevertec.exceptions.models.ErrorResponse;
 import ru.clevertec.uas.security.services.JwtService;
 
 import java.io.IOException;
@@ -22,19 +27,17 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_PREFIX = "Bearer ";
-
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper mapper;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith(BEARER_PREFIX)) {
-            String token = authHeader.substring(BEARER_PREFIX.length());
+        try {
+            String token = jwtService.extractTokenFromAuthHeader(authHeader);
             String extractedUsername = jwtService.extractUsername(token);
             if (extractedUsername != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(extractedUsername);
@@ -48,7 +51,18 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
+            filterChain.doFilter(request, response);
+        } catch (TokenException e) {
+            setErrorResponseForTokenException(response, e);
         }
-        filterChain.doFilter(request, response);
+    }
+
+    private void setErrorResponseForTokenException(HttpServletResponse response, TokenException e) throws IOException {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), e.getErrorCode().getCode());
+        String jsonErrorResponse = mapper.writeValueAsString(errorResponse);
+
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(jsonErrorResponse);
     }
 }
