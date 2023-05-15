@@ -1,6 +1,7 @@
 package ru.clevertec.users.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.exceptions.exceptions.NotFoundException;
@@ -20,6 +21,7 @@ import ru.clevertec.users.utils.mappers.UsersMapper;
 import java.util.List;
 import java.util.Optional;
 
+import static ru.clevertec.users.utils.PageableHelper.setPageableUnsorted;
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
 @Service
@@ -33,8 +35,10 @@ public class UsersServiceImpl implements UsersService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserDto> getAllUsers() {
-        return mapper.convertAllUsersToDtos(repository.findAll());
+    public List<UserDto> getAllUsersWithPagination(Pageable pageable) {
+        pageable = setPageableUnsorted(pageable);
+        List<User> users = repository.findAll(pageable).getContent();
+        return mapper.convertAllUsersToDtos(users);
     }
 
     @Transactional(readOnly = true)
