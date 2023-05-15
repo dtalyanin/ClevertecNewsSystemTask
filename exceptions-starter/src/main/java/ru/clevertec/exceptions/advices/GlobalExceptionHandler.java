@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.clevertec.exceptions.exceptions.FieldException;
 import ru.clevertec.exceptions.exceptions.NotFoundException;
 import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.exceptions.models.ErrorResponse;
@@ -57,14 +58,6 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(response);
     }
-//
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
-//        ErrorResponse response = new ErrorResponse(e.getMessage(), ErrorCode.GENERAL_EXCEPTION.getCode());
-//        return ResponseEntity
-//                .internalServerError()
-//                .body(response);
-//    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<IncorrectValueErrorResponse> handleUserNotFoundException(NotFoundException e) {
@@ -74,6 +67,16 @@ public class GlobalExceptionHandler {
                 e.getErrorCode().getCode());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
+    @ExceptionHandler(FieldException.class)
+    public ResponseEntity<ErrorResponse> handleFieldException(FieldException e) {
+        ErrorResponse response = new ErrorResponse(
+                e.getMessage(),
+                e.getErrorCode().getCode());
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
 }

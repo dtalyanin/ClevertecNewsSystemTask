@@ -1,4 +1,4 @@
-package ru.clevertec.nms.clients;
+package ru.clevertec.nms.clients.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import ru.clevertec.nms.clients.exceptions.UsersClientException;
-import ru.clevertec.nms.models.responses.ErrorResponse;
+import ru.clevertec.exceptions.exceptions.UsersClientException;
+import ru.clevertec.exceptions.models.ErrorResponse;
 
 @Component
 @RequiredArgsConstructor

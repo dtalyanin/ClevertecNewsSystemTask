@@ -10,7 +10,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import ru.clevertec.nms.exceptions.FieldException;
+import ru.clevertec.exceptions.exceptions.FieldException;
+import ru.clevertec.exceptions.models.ErrorCode;
 
 import java.lang.reflect.Field;
 
@@ -54,8 +55,6 @@ public class CacheAspect {
     /**
      * Save product in DAO and then save in the cache
      *
-     * @param product product to add
-     * @param id      generated ID for new product
      */
     @AfterReturning(value = "@annotation(cachePut)", returning = "value")
     public void putInCache(CachePut cachePut, Object value) {
@@ -81,9 +80,11 @@ public class CacheAspect {
             idField.setAccessible(true);
             return (Long) idField.get(value);
         } catch (NoSuchFieldException e) {
-            throw new FieldException(ID_FIELD + FIELD_NOT_PRESENT + value.getClass().getSimpleName());
+            String message = ID_FIELD + FIELD_NOT_PRESENT + value.getClass().getSimpleName();
+            throw new FieldException(message, ErrorCode.FIELD_REFLECT_EXCEPTION);
         } catch (IllegalAccessException e) {
-            throw new FieldException(ID_FIELD + CANNOT_GET_FIELD_VALUE + value.getClass().getSimpleName());
+            String message = ID_FIELD + CANNOT_GET_FIELD_VALUE + value.getClass().getSimpleName();
+            throw new FieldException(message, ErrorCode.FIELD_REFLECT_EXCEPTION);
         }
     }
 }

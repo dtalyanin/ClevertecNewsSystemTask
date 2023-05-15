@@ -1,8 +1,8 @@
 package ru.clevertec.nms.utils;
 
 import lombok.experimental.UtilityClass;
-import ru.clevertec.nms.exceptions.ErrorCode;
-import ru.clevertec.nms.exceptions.TokenException;
+import ru.clevertec.exceptions.exceptions.TokenException;
+import ru.clevertec.exceptions.models.ErrorCode;
 
 import static ru.clevertec.nms.utils.constants.MessageConstants.INCORRECT_TOKEN;
 

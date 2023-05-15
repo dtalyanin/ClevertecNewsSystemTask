@@ -14,11 +14,5 @@ public enum Role {
     JOURNALIST(Set.of(Permission.NEWS_MANAGE, Permission.COMMENTS_MENAGE)),
     SUBSCRIBER(Collections.singleton(Permission.COMMENTS_MENAGE));
 
-    private static final String ROLE_PREFIX = "ROLE_";
-
     private final Set<Permission> permissions;
-
-    public String getNameWithPrefix() {
-        return ROLE_PREFIX + this.name();
-    }
 }

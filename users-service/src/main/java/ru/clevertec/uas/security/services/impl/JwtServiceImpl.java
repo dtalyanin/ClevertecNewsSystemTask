@@ -19,21 +19,10 @@ import static ru.clevertec.uas.utils.constants.MessageConstants.TOKEN_NOT_VALID;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    private static final String BEARER_PREFIX = "Bearer ";
-
     @Value("${jwt.secret-key}")
     private String secretKey;
     @Value("${jwt.lifetime}")
     private long tokenLifetime;
-
-    @Override
-    public String extractTokenFromAuthHeader(String authHeader) {
-        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith(BEARER_PREFIX)) {
-            return authHeader.substring(BEARER_PREFIX.length());
-        } else {
-            throw new TokenException(TOKEN_NOT_VALID, ErrorCode.INCORRECT_TOKEN);
-        }
-    }
 
     @Override
     public String extractUsername(String token) {

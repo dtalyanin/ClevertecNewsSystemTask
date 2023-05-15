@@ -3,7 +3,7 @@ package ru.clevertec.nms.utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import ru.clevertec.nms.exceptions.CacheException;
+import ru.clevertec.exceptions.exceptions.CacheException;
 import ru.clevertec.nms.utils.cache.Cache;
 import ru.clevertec.nms.utils.cache.impl.LFUCache;
 import ru.clevertec.nms.utils.cache.impl.LRUCache;
