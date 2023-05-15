@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.clevertec.exceptions.exceptions.AuthenticationException;
+import ru.clevertec.exceptions.exceptions.TokenException;
 import ru.clevertec.exceptions.exceptions.UserExistException;
 import ru.clevertec.exceptions.models.ErrorResponse;
 import ru.clevertec.exceptions.models.IncorrectValueErrorResponse;
@@ -28,6 +29,14 @@ public class UsersExceptionHandler {
                 e.getErrorCode().getCode());
         return ResponseEntity
                 .unprocessableEntity()
+                .body(response);
+    }
+
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<ErrorResponse> handleTokenException(TokenException e) {
+        ErrorResponse response = new ErrorResponse(e.getMessage(), e.getErrorCode().getCode());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(response);
     }
 }

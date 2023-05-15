@@ -57,15 +57,14 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(response);
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
-        ErrorResponse response = new ErrorResponse(e.getMessage(), ErrorCode.GENERAL_EXCEPTION.getCode());
-        return ResponseEntity
-                .internalServerError()
-                .body(response);
-    }
-
+//
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
+//        ErrorResponse response = new ErrorResponse(e.getMessage(), ErrorCode.GENERAL_EXCEPTION.getCode());
+//        return ResponseEntity
+//                .internalServerError()
+//                .body(response);
+//    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<IncorrectValueErrorResponse> handleUserNotFoundException(NotFoundException e) {

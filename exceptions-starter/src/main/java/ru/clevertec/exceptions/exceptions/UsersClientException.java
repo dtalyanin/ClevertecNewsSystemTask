@@ -2,7 +2,6 @@ package ru.clevertec.exceptions.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import ru.clevertec.nms.exceptions.ErrorCode;
 
 @Getter
 public class UsersClientException extends RuntimeException {
