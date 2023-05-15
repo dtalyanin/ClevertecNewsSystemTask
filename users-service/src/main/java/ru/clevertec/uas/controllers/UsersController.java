@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.clevertec.loggers.annotations.ControllerLog;
 import ru.clevertec.uas.dto.CreateDto;
 import ru.clevertec.uas.dto.UpdateDto;
 import ru.clevertec.uas.dto.UserDto;
@@ -24,6 +25,7 @@ import static ru.clevertec.uas.utils.constants.MessageConstants.MIN_ID_MESSAGE;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Validated
+@ControllerLog
 public class UsersController {
 
     private final UsersService service;

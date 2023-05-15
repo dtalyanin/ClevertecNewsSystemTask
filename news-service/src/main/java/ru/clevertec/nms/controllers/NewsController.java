@@ -2,13 +2,13 @@ package ru.clevertec.nms.controllers;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.clevertec.loggers.annotations.ControllerLog;
 import ru.clevertec.nms.clients.services.UsersService;
 import ru.clevertec.nms.dto.news.ModificationNewsDto;
 import ru.clevertec.nms.dto.news.NewsDto;
@@ -19,13 +19,14 @@ import ru.clevertec.nms.services.NewsService;
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.nms.utils.JwtTokenHelper.*;
+import static ru.clevertec.nms.utils.JwtTokenHelper.getJwtTokenFromAuthHeader;
 import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 
 @RestController
 @RequestMapping("/news")
 @RequiredArgsConstructor
 @Validated
+@ControllerLog
 public class NewsController {
 
     private final NewsService newsService;

@@ -1,23 +1,20 @@
 package ru.clevertec.uas.security.services.impl;
 
-import io.jsonwebtoken.ClaimJwtException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.clevertec.uas.exceptions.AuthenticationException;
-import ru.clevertec.uas.exceptions.ErrorCode;
+import ru.clevertec.exceptions.exceptions.TokenException;
+import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.uas.security.services.JwtService;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
-import static ru.clevertec.uas.utils.constants.MessageConstants.INCORRECT_TOKEN_DATA;
+import static ru.clevertec.uas.utils.constants.MessageConstants.TOKEN_NOT_VALID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -67,8 +64,12 @@ public class JwtServiceImpl implements JwtService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (ClaimJwtException e) {
-            throw new AuthenticationException(e.getMessage(), ErrorCode.TOKEN_INCORRECT_DATA);
+        } catch (ExpiredJwtException e) {
+            throw new TokenException(TOKEN_NOT_VALID, ErrorCode.TOKEN_EXPIRED);
+        } catch (MalformedJwtException e) {
+            throw new TokenException(TOKEN_NOT_VALID, ErrorCode.TOKEN_NOT_VALID);
+        } catch (JwtException e) {
+            throw new TokenException(TOKEN_NOT_VALID, ErrorCode.INCORRECT_TOKEN);
         }
     }
 

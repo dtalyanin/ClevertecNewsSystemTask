@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.clevertec.loggers.annotations.ControllerLog;
 import ru.clevertec.nms.clients.services.UsersService;
 import ru.clevertec.nms.dto.comments.CommentDto;
 import ru.clevertec.nms.dto.comments.CreateCommentDto;
@@ -26,6 +27,7 @@ import static ru.clevertec.nms.utils.constants.MessageConstants.*;
 @RequestMapping("/comments")
 @RequiredArgsConstructor
 @Validated
+@ControllerLog
 public class CommentsController {
 
     private final CommentsService commentsService;

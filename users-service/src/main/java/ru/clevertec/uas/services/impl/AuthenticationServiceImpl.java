@@ -7,10 +7,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import ru.clevertec.exceptions.exceptions.AuthenticationException;
+import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.uas.dto.authentication.AuthenticationDto;
 import ru.clevertec.uas.dto.authentication.TokenDto;
-import ru.clevertec.uas.exceptions.ErrorCode;
-import ru.clevertec.uas.exceptions.AuthenticationException;
 import ru.clevertec.uas.security.services.JwtService;
 import ru.clevertec.uas.services.AuthenticationService;
 

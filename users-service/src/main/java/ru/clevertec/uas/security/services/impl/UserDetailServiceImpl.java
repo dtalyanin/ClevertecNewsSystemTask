@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import ru.clevertec.exceptions.exceptions.NotFoundException;
+import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.uas.dao.UsersRepository;
-import ru.clevertec.uas.exceptions.ErrorCode;
-import ru.clevertec.uas.exceptions.UserNotFoundException;
 import ru.clevertec.uas.models.User;
 import ru.clevertec.uas.security.models.SimpleUserDetails;
 
@@ -24,7 +24,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         Optional<User> oUser = repository.findByUsername(username);
         if (oUser.isEmpty()) {
-            throw new UserNotFoundException(USERNAME_NOT_FOUND, username, ErrorCode.USERNAME_NOT_FOUND);
+            throw new NotFoundException(USERNAME_NOT_FOUND, username, ErrorCode.USER_ID_NOT_FOUND);
         }
         return new SimpleUserDetails(oUser.get());
     }

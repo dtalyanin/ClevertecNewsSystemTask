@@ -22,7 +22,7 @@ public class MessageConstants {
     public static final String NOT_COMMENT_OWNER = "User not owner of this comment";
     public static final String USERNAME_NOT_FOUND = "User with name not found id DB";
 
-    public static final String HEADER_NOT_PRESENT = " required request header is not present";
+
 
     public static final String CANNOT_END = ": cannot ";
     public static final String WRONG_CACHE_CHOICE = "Wrong cache implementation (possible values are LFU and LRU)";

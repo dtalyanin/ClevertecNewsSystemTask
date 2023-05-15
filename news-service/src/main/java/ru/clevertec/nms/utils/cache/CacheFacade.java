@@ -1,6 +1,7 @@
 package ru.clevertec.nms.utils.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.nms.dto.comments.CommentDto;
 import ru.clevertec.nms.dto.news.NewsDto;
@@ -14,6 +15,7 @@ import static ru.clevertec.nms.utils.constants.CacheConstants.NEWS_CACHE;
 
 
 @Component
+@Profile("dev")
 public class CacheFacade {
 
     private final Map<String, Cache<?>> caches;
