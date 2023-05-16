@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 
 import static generators.factories.PageableFactory.getDefaultPageable;
-import static generators.factories.PageableFactory.getDefaultPageableWithSortingByName;
+import static generators.factories.PageableFactory.getDefaultPageableWithSortingByUsernameDesc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.clevertec.users.utils.PageableHelper.setPageableUnsorted;
 
@@ -31,7 +31,7 @@ class PageableHelperTest {
 
     @Test
     void checkSetPageableUnsortedShouldChangeToUnsorted() {
-        Pageable actual = setPageableUnsorted(getDefaultPageableWithSortingByName());
+        Pageable actual = setPageableUnsorted(getDefaultPageableWithSortingByUsernameDesc());
         Pageable expected = getDefaultPageable();
 
         assertThat(actual).isEqualTo(expected);
@@ -39,7 +39,7 @@ class PageableHelperTest {
 
     @Test
     void checkSetPageableUnsortedShouldNotChangeAndNotReferToSameObject() {
-        Pageable actual = getDefaultPageableWithSortingByName();
+        Pageable actual = getDefaultPageableWithSortingByUsernameDesc();
         Pageable expected = setPageableUnsorted(actual);
 
         assertThat(actual).isNotSameAs(expected);

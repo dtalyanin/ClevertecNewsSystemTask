@@ -22,12 +22,16 @@ public class PageableFactory {
         return PageRequest.of(0, 2);
     }
 
+    public static Pageable getPageableWithPage2AndSize2() {
+        return PageRequest.of(1, 2);
+    }
+
     public static Pageable getPageableWithFirstPage() {
         return PageRequest.of(0, 20);
     }
 
 
-    public static Pageable getDefaultPageableWithSortingByName() {
-        return PageRequest.of(0, 20, Sort.Direction.ASC, "name");
+    public static Pageable getDefaultPageableWithSortingByUsernameDesc() {
+        return PageRequest.of(0, 20, Sort.Direction.DESC, "username");
     }
 }

@@ -1,8 +1,10 @@
 package ru.clevertec.users.utils.mappers;
 
+import jakarta.validation.Valid;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import ru.clevertec.users.dto.CreateDto;
 import ru.clevertec.users.dto.UpdateDto;
 import ru.clevertec.users.dto.UserDto;
@@ -12,7 +14,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Validated
 public abstract class UsersMapper {
 
     private static final String PASSWORD_FIELD = "password";
@@ -24,9 +28,9 @@ public abstract class UsersMapper {
     public abstract UserDto convertUserToDto(User user);
     public abstract List<UserDto> convertAllUsersToDtos(Iterable<User> users);
     @Mapping(source = PASSWORD_FIELD, target = PASSWORD_FIELD, qualifiedByName = ENCODE_PASSWORD_METHOD)
-    public abstract void updateUser(@MappingTarget User user, UpdateDto dto);
+    public abstract void updateUser(@MappingTarget User user, @Valid UpdateDto dto);
     @Mapping(source = PASSWORD_FIELD, target = PASSWORD_FIELD, qualifiedByName = ENCODE_PASSWORD_METHOD)
-    public abstract User convertDtoToUser(CreateDto dto);
+    public abstract User convertDtoToUser(@Valid CreateDto dto);
 
     @Named(ENCODE_PASSWORD_METHOD)
     protected String encodePassword(String password) {

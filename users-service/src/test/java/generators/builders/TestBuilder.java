@@ -1,6 +1,6 @@
 package generators.builders;
 
-public interface Builder<T> {
+public interface TestBuilder<T> {
 
     T build();
 }

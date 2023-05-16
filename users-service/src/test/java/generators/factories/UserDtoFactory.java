@@ -5,6 +5,7 @@ import ru.clevertec.users.dto.UserDto;
 import ru.clevertec.users.models.Role;
 
 
+import java.util.Collections;
 import java.util.List;
 
 public class UserDtoFactory {
@@ -41,5 +42,17 @@ public class UserDtoFactory {
 
     public static List<UserDto> getAllUserDtos() {
         return List.of(getSubscriber(), getSubscriber2(), getSubscriber3(), getAdmin(), getJournalist());
+    }
+
+    public static List<UserDto> getEmptyListUserDtos() {
+        return Collections.emptyList();
+    }
+
+    public static List<UserDto> getFirst2UserDtos() {
+        return List.of(getSubscriber(), getSubscriber2());
+    }
+
+    public static List<UserDto> getFrom2PageFirst2UserDtos() {
+        return List.of(getSubscriber3(), getAdmin());
     }
 }
