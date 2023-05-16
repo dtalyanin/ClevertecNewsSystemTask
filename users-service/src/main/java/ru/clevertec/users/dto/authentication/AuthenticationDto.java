@@ -6,5 +6,6 @@ import jakarta.validation.constraints.Size;
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
 public record AuthenticationDto(@NotBlank(message = EMPTY_USER_NAME) String username,
-                                @NotBlank(message = EMPTY_PASSWORD) @Size(message = TOO_SMALL_PASSWORD) String password) {
+                                @NotBlank(message = EMPTY_PASSWORD)
+                                @Size(min = 8, message = TOO_SMALL_PASSWORD) String password) {
 }

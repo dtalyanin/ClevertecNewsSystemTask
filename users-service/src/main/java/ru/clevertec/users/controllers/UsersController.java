@@ -19,8 +19,7 @@ import ru.clevertec.users.services.UsersService;
 import java.net.URI;
 import java.util.List;
 
-import static ru.clevertec.users.utils.constants.MessageConstants.EMPTY_TOKEN;
-import static ru.clevertec.users.utils.constants.MessageConstants.MIN_ID_MESSAGE;
+import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
 @RestController
 @RequestMapping("/users")
@@ -32,7 +31,7 @@ public class UsersController {
     private final UsersService service;
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(Pageable pageable) {
+    public ResponseEntity<List<UserDto>> getAllUsersWithPagination(Pageable pageable) {
         return ResponseEntity.ok(service.getAllUsersWithPagination(pageable));
     }
 
@@ -49,24 +48,28 @@ public class UsersController {
 
     @PostMapping
     public ResponseEntity<ModificationResponse> addUser(@RequestBody @Valid CreateDto dto) {
-        ModificationResponse response = service.addUser(dto);
+        UserDto createdDto = service.addUser(dto);
+        ModificationResponse response = new ModificationResponse(createdDto.getId(), USER_ADDED);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(response.id()).toUri();
+                .buildAndExpand(createdDto.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateUser(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, @RequestBody @Valid UpdateDto dto) {
-        return ResponseEntity.ok(service.updateUser(id, dto));
+        UserDto updatedDto = service.updateUser(id, dto);
+        ModificationResponse response = new ModificationResponse(updatedDto.getId(), USER_UPDATED);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteUserById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
-        return ResponseEntity.ok(service.deleteUserById(id));
+        service.deleteUserById(id);
+        ModificationResponse response = new ModificationResponse(id, USER_DELETED);
+        return ResponseEntity.ok(response);
     }
-
 }

@@ -5,12 +5,16 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
+import ru.clevertec.exceptions.exceptions.PasswordException;
+import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.users.dto.CreateDto;
 import ru.clevertec.users.dto.UpdateDto;
 import ru.clevertec.users.dto.UserDto;
 import ru.clevertec.users.models.User;
 
 import java.util.List;
+
+import static ru.clevertec.users.utils.constants.MessageConstants.EMPTY_PASSWORD;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -34,6 +38,9 @@ public abstract class UsersMapper {
 
     @Named(ENCODE_PASSWORD_METHOD)
     protected String encodePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new PasswordException(EMPTY_PASSWORD, password, ErrorCode.INCORRECT_FIELD_VALUE);
+        }
         return encoder.encode(password);
     }
 }

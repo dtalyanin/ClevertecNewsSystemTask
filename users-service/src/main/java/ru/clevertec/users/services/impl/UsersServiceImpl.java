@@ -13,7 +13,6 @@ import ru.clevertec.users.dto.CreateDto;
 import ru.clevertec.users.dto.UpdateDto;
 import ru.clevertec.users.dto.UserDto;
 import ru.clevertec.users.models.User;
-import ru.clevertec.users.models.responses.ModificationResponse;
 import ru.clevertec.users.security.services.JwtService;
 import ru.clevertec.users.services.UsersService;
 import ru.clevertec.users.utils.mappers.UsersMapper;
@@ -64,17 +63,17 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public ModificationResponse addUser(CreateDto dto) {
+    public UserDto addUser(CreateDto dto) {
         if (repository.existsByUsername(dto.getUsername())) {
             throw new UserExistException(USER_EXIST, dto.getUsername(), ErrorCode.USER_EXIST);
         }
         User user = mapper.convertDtoToUser(dto);
         repository.save(user);
-        return new ModificationResponse(user.getId(), USER_ADDED);
+        return mapper.convertUserToDto(user);
     }
 
     @Override
-    public ModificationResponse updateUser(long id, UpdateDto dto) {
+    public UserDto updateUser(long id, UpdateDto dto) {
         Optional<User> oUser = repository.findById(id);
         if (oUser.isEmpty()) {
             throw new NotFoundException(USER_ID_NOT_FOUND + CANNOT_UPDATE_END, id, ErrorCode.USER_ID_NOT_FOUND);
@@ -82,15 +81,14 @@ public class UsersServiceImpl implements UsersService {
         User user = oUser.get();
         mapper.updateUser(user, dto);
         repository.save(user);
-        return new ModificationResponse(id, USER_UPDATED);
+        return mapper.convertUserToDto(user);
     }
 
     @Override
-    public ModificationResponse deleteUserById(long id) {
+    public void deleteUserById(long id) {
         int deletedCount = repository.deleteById(id);
         if (deletedCount == 0) {
             throw new NotFoundException(USER_ID_NOT_FOUND + CANNOT_DELETE_END, id, ErrorCode.USER_ID_NOT_FOUND);
         }
-        return new ModificationResponse(id, USER_DELETED);
     }
 }

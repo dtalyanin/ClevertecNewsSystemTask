@@ -1,30 +1,37 @@
 package ru.clevertec.users.integration.services.impl;
 
-import generators.factories.UpdateDtoFactory;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import ru.clevertec.exceptions.exceptions.NotFoundException;
+import ru.clevertec.exceptions.exceptions.PasswordException;
+import ru.clevertec.exceptions.exceptions.TokenException;
 import ru.clevertec.exceptions.exceptions.UserExistException;
 import ru.clevertec.users.dao.UsersRepository;
 import ru.clevertec.users.dto.UserDto;
 import ru.clevertec.users.integration.BaseIntegrationTest;
-import ru.clevertec.users.models.responses.ModificationResponse;
+import ru.clevertec.users.models.Role;
 import ru.clevertec.users.services.impl.UsersServiceImpl;
 
 import java.util.List;
 
 import static generators.factories.CreateDtoFactory.*;
-import static generators.factories.ModificationResponseFactory.*;
 import static generators.factories.PageableFactory.*;
+import static generators.factories.TokenFactory.*;
 import static generators.factories.UpdateDtoFactory.*;
 import static generators.factories.UserDtoFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static ru.clevertec.users.utils.constants.MessageConstants.USER_EXIST;
-import static ru.clevertec.users.utils.constants.MessageConstants.USER_ID_NOT_FOUND;
+import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
-class UsersServiceImplIntegrationTest extends BaseIntegrationTest {
+@SuppressWarnings("OptionalGetWithoutIsPresent")
+class UsersServiceImplTest extends BaseIntegrationTest {
+
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+    @Value("${jwt.lifetime}")
+    private long tokenLifetime;
 
     @Autowired
     private UsersServiceImpl service;
@@ -86,21 +93,47 @@ class UsersServiceImplIntegrationTest extends BaseIntegrationTest {
                 .hasMessage(USER_ID_NOT_FOUND);
     }
 
-//    @Test
-//    void getUserByToken() {
-//    }
+    @Test
+    void checkGetUserByTokenShouldReturnUser() {
+        String token = getCorrectSubscriberToken(secretKey, tokenLifetime);
+        UserDto actualUser = service.getUserByToken(token);
+        UserDto expectedUser = getSubscriber();
+
+        assertThat(actualUser).isEqualTo(expectedUser);
+    }
 
     @Test
-    void checkAddUserShouldReturnModificationResponseWithGeneratedId() {
-        ModificationResponse actualResponse = service.addUser(getCreateDto());
-        ModificationResponse expectedResponse = getUserAddedResponse();
+    void checkGetUserByTokenShouldThrowTokenExceptionWhenNoUserFound() {
+        String token = getTokenWithNotExistingUsername(secretKey, tokenLifetime);
+        assertThatThrownBy(() -> service.getUserByToken(token))
+                .isInstanceOf(TokenException.class);
+    }
 
-        assertThat(actualResponse).isEqualTo(expectedResponse);
+    @Test
+    void checkGetUserByTokenShouldThrowTokenExceptionWhenTokenExpired() {
+        String token = getTokenWithExpiredDate(secretKey, tokenLifetime);
+        assertThatThrownBy(() -> service.getUserByToken(token))
+                .isInstanceOf(TokenException.class);
+    }
+
+    @Test
+    void checkGetUserByTokenShouldThrowTokenExceptionWhenTokenNotCorrect() {
+        String token = getIncorrectToken(secretKey, tokenLifetime);
+        assertThatThrownBy(() -> service.getUserByToken(token))
+                .isInstanceOf(TokenException.class);
+    }
+
+    @Test
+    void checkAddUserShouldReturnUserWithGeneratedId() {
+        UserDto actualUser = service.addUser(getCreateDto());
+        UserDto expectedUser = getCreatedUser();
+
+        assertThat(actualUser).isEqualTo(expectedUser);
     }
 
     @Test
     void checkAddUserShouldExistInDbAfterExecution() {
-        long createdId = service.addUser(getCreateDto()).id();
+        long createdId = service.addUser(getCreateDto()).getId();
 
         assertThat(repository.findById(createdId)).isPresent();
     }
@@ -155,31 +188,64 @@ class UsersServiceImplIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void checkUpdateUserShouldReturnModificationResponseWithUpdatedId() {
-        ModificationResponse actualResponse = service.updateUser(1L, getUpdateDto());
-        ModificationResponse expectedResponse = getUserUpdatedResponse();
+    void checkUpdateUserShouldExistInDbWithUpdatedPassword() {
+        long idForUpdate = 1L;
+        String passwordBeforeUpdate = repository.findById(idForUpdate).get().getPassword();
+        service.updateUser(idForUpdate, getUpdateDtoWithOnlyUpdatedPassword());
+        String passwordAfterUpdate = repository.findById(idForUpdate).get().getPassword();
 
-        assertThat(actualResponse).isEqualTo(expectedResponse);
+        assertThat(passwordAfterUpdate).isNotEqualTo(passwordBeforeUpdate);
     }
 
     @Test
-    void checkUpdateUserShouldExistInDbWithUpdatedPasswordAndRole() {
-        service.updateUser(1L, getUpdateDto());
+    void checkUpdateUserShouldReturnUserWithUpdatedRole() {
+        UserDto actualUser = service.updateUser(1L, getUpdateDtoWithOnlyUpdatedRole());
+        UserDto expectedUser = getUpdatedUser();
 
+        assertThat(actualUser).isEqualTo(expectedUser);
     }
 
     @Test
-    void checkDeleteUserByIdShouldReturnModificationResponseWithDeletedId() {
-        ModificationResponse actualResponse = service.deleteUserById(5L);
-        ModificationResponse expectedResponse = getUserDeletedResponse();
+    void checkUpdateUserShouldExistInDbWithUpdatedRole() {
+        long idForUpdate = 1L;
+        Role roleBeforeUpdate = repository.findById(idForUpdate).get().getRole();
+        service.updateUser(idForUpdate, getUpdateDtoWithOnlyUpdatedRole());
+        Role roleAfterUpdate = repository.findById(idForUpdate).get().getRole();
 
-        assertThat(actualResponse).isEqualTo(expectedResponse);
+        assertThat(roleAfterUpdate).isNotEqualTo(roleBeforeUpdate);
+    }
+
+    @Test
+    void checkUpdateUserShouldThrowNotFoundException() {
+        assertThatThrownBy(() -> service.updateUser(100L, getUpdateDto()))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(USER_ID_NOT_FOUND + CANNOT_UPDATE_END);
+    }
+
+    @Test
+    void checkUpdateUserShouldThrowExceptionEmptyPassword() {
+        assertThatThrownBy(() -> service.updateUser(1L, getUpdateDtoWithEmptyPassword()))
+                .isInstanceOf(PasswordException.class);
+    }
+
+    @Test
+    void checkUpdateUserShouldThrowExceptionTooSmallPassword() {
+        assertThatThrownBy(() -> service.updateUser(1L, getUpdateDtoWithTooSmallPassword()))
+                .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
     void checkDeleteUserByIdShouldNotExistInDbAfterExecution() {
-        long deletedId = service.deleteUserById(5L).id();
+        long idForDelete = 5L;
+        service.deleteUserById(idForDelete);
 
-        assertThat(repository.findById(deletedId)).isEmpty();
+        assertThat(repository.findById(idForDelete)).isEmpty();
+    }
+
+    @Test
+    void checkDeleteUserByIdShouldThrowNotFoundException() {
+        assertThatThrownBy(() -> service.deleteUserById(100L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(USER_ID_NOT_FOUND + CANNOT_DELETE_END);
     }
 }

@@ -22,6 +22,12 @@ public class UpdateDtoFactory {
                 .build();
     }
 
+    public static UpdateDto getUpdateDtoWithEmptyPassword() {
+        return UpdateDtoTestBuilder.builder()
+                .withPassword(" ".repeat(10))
+                .build();
+    }
+
     public static UpdateDto getUpdateDtoWithTooSmallPassword() {
         return UpdateDtoTestBuilder.builder()
                 .withPassword("123")

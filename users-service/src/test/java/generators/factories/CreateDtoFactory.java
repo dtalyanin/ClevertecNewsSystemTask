@@ -23,7 +23,7 @@ public class CreateDtoFactory {
 
     public static CreateDto getCreateDtoWithEmptyName() {
         return CreateDtoTestBuilder.builder()
-                .withUsername("  ")
+                .withUsername("")
                 .build();
     }
 
@@ -41,7 +41,7 @@ public class CreateDtoFactory {
 
     public static CreateDto getCreateDtoWithEmptyPassword() {
         return CreateDtoTestBuilder.builder()
-                .withPassword(" ")
+                .withPassword(" ".repeat(10))
                 .build();
     }
 
