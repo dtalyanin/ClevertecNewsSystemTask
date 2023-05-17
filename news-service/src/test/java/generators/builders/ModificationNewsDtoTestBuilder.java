@@ -10,8 +10,8 @@ import ru.clevertec.news.dto.news.ModificationNewsDto;
 @AllArgsConstructor
 public class ModificationNewsDtoTestBuilder implements TestBuilder<ModificationNewsDto> {
 
-    private String title = "News";
-    private String text = "Text";
+    private String title = "News new";
+    private String text = "Text new";
 
     @Override
     public ModificationNewsDto build() {

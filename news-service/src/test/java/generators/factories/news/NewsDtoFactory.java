@@ -5,6 +5,7 @@ import ru.clevertec.news.dto.news.NewsDto;
 import ru.clevertec.news.dto.news.NewsWithCommentsDto;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static generators.factories.comments.CommentDtoFactory.*;
@@ -49,6 +50,7 @@ public class NewsDtoFactory {
         dto.setId(1L);
         dto.setTitle("News");
         dto.setText("Text");
+        dto.setUsername("User");
         dto.setTime(LocalDateTime.parse("2023-01-01T10:00:00"));
         dto.setComments(getAllCommentsForNews1());
         return dto;
@@ -59,6 +61,7 @@ public class NewsDtoFactory {
         dto.setId(1L);
         dto.setTitle("News");
         dto.setText("Text");
+        dto.setUsername("User");
         dto.setTime(LocalDateTime.parse("2023-01-01T10:00:00"));
         dto.setComments(getFirst2Comments());
         return dto;
@@ -69,6 +72,7 @@ public class NewsDtoFactory {
         dto.setId(3L);
         dto.setTitle("News 3");
         dto.setText("Text 3");
+        dto.setUsername("User 3");
         dto.setTime(LocalDateTime.parse("2023-03-01T10:00:00"));
         dto.setComments(getEmptyListComments());
         return dto;
@@ -101,11 +105,15 @@ public class NewsDtoFactory {
         return List.of(getNews3());
     }
 
+    public static List<NewsDto> getEmptyListNews() {
+        return Collections.emptyList();
+    }
+
     public static NewsDto getDtoToSearchByTextIgnoreCase() {
         return NewsDtoTestBuilder.builder()
                 .withId(null)
-                .withTitle("nEwS ")
-                .withText(null)
+                .withTitle(null)
+                .withText("tExT ")
                 .withUsername(null)
                 .withTime(null)
                 .build();
@@ -114,8 +122,8 @@ public class NewsDtoFactory {
     public static NewsDto getDtoToSearchByTitleIgnoreCase() {
         return NewsDtoTestBuilder.builder()
                 .withId(null)
-                .withTitle(null)
-                .withText("tExT ")
+                .withTitle("nEwS ")
+                .withText(null)
                 .withUsername(null)
                 .withTime(null)
                 .build();

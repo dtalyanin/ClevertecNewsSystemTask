@@ -243,15 +243,14 @@ class CommentsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     void checkUpdateCommentShouldThrowExceptionEmptyText() {
-        service.updateComment(1L, getUpdateDtoWithEmptyText(), getAdmin());
-        assertThatThrownBy(() -> repository.flush())
+        assertThatThrownBy(() -> service.updateComment(1L, getUpdateDtoWithEmptyText(), getAdmin()))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test
     void checkUpdateCommentShouldNotUpdateValueIfNullText() {
-        service.updateComment(1L, getUpdateDtoWithNullText(), getAdmin());
-        assertThatCode(() -> repository.flush()).doesNotThrowAnyException();
+        assertThatCode(() -> service.updateComment(1L, getUpdateDtoWithNullText(), getAdmin()))
+                .doesNotThrowAnyException();
     }
 
     @Test

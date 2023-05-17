@@ -1,5 +1,6 @@
 package ru.clevertec.news.utils.mappers;
 
+import jakarta.validation.Valid;
 import org.mapstruct.*;
 import org.springframework.validation.annotation.Validated;
 import ru.clevertec.news.dto.comments.CommentDto;
@@ -19,8 +20,8 @@ public interface NewsMapper {
     NewsDto convertNewsToDto(News news);
     @Mapping(source = "comments", target = "comments")
     NewsWithCommentsDto convertNewsToDtoWithComments(News news, List<CommentDto> comments);
-    News convertModificationDtoToNews(ModificationNewsDto dto, String username);
-    void updateNews(@MappingTarget News news, ModificationNewsDto dto);
+    @Valid News convertModificationDtoToNews(ModificationNewsDto dto, String username);
+    @Valid News updateNews(@MappingTarget News news, ModificationNewsDto dto);
     News convertDtoToNews(NewsDto dto);
     List<NewsDto> convertAllNewsToDto(List<News> news);
 

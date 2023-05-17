@@ -289,8 +289,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     void checkUpdateNewsShouldThrowExceptionEmptyText() {
-        service.updateNews(1L, getModificationDtoWithEmptyText(), getAdmin());
-        assertThatThrownBy(() -> repository.flush())
+        assertThatThrownBy(() -> service.updateNews(1L, getModificationDtoWithEmptyText(), getAdmin()))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 
@@ -302,8 +301,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     void checkUpdateNewsShouldThrowExceptionEmptyTitle() {
-        service.updateNews(1L, getModificationDtoWithEmptyTitle(), getAdmin());
-        assertThatThrownBy(() -> repository.flush())
+        assertThatThrownBy(() -> service.updateNews(1L, getModificationDtoWithEmptyTitle(), getAdmin()))
                 .isInstanceOf(ConstraintViolationException.class);
     }
 

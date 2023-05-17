@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
         String message = e.getHeaderName() + HEADER_NOT_PRESENT;
         ErrorResponse response = new ErrorResponse(message, ErrorCode.NO_AUTH_HEADER.getCode());
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.FORBIDDEN)
                 .body(response);
     }
 

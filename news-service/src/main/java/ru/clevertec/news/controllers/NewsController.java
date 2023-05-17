@@ -13,6 +13,7 @@ import ru.clevertec.news.clients.services.UsersService;
 import ru.clevertec.news.dto.news.ModificationNewsDto;
 import ru.clevertec.news.dto.news.NewsDto;
 import ru.clevertec.news.clients.dto.AuthenticatedUser;
+import ru.clevertec.news.dto.news.NewsWithCommentsDto;
 import ru.clevertec.news.models.responses.ModificationResponse;
 import ru.clevertec.news.services.NewsService;
 
@@ -49,7 +50,7 @@ public class NewsController {
     }
 
     @GetMapping("/{id}/comments")
-    public ResponseEntity<NewsDto> getNewsByIdWithCommentsPagination(
+    public ResponseEntity<NewsWithCommentsDto> getNewsByIdWithCommentsPagination(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, Pageable pageable) {
         return ResponseEntity.ok(newsService.getNewsByIdWithCommentsPagination(id, pageable));
     }
