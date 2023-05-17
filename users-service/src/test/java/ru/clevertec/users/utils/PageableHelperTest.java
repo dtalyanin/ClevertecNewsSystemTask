@@ -1,7 +1,6 @@
 package ru.clevertec.users.utils;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 
 import static generators.factories.PageableFactory.getDefaultPageable;
@@ -9,7 +8,6 @@ import static generators.factories.PageableFactory.getDefaultPageableWithSorting
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.clevertec.users.utils.PageableHelper.setPageableUnsorted;
 
-@SpringBootTest
 class PageableHelperTest {
 
     @Test

@@ -10,5 +10,3 @@ VALUES ('User', '$2a$12$kdKrgZgEEmQSzgWiGs.6AOErkFP1tXvxJ.4gtnpQAVZyNmFC7cZn2', 
        ('User 4', '$2a$12$kdKrgZgEEmQSzgWiGs.6AOErkFP1tXvxJ.4gtnpQAVZyNmFC7cZn2', 'ADMIN'),
        ('User 5', '$2a$12$kdKrgZgEEmQSzgWiGs.6AOErkFP1tXvxJ.4gtnpQAVZyNmFC7cZn2', 'JOURNALIST');
 
-SELECT SETVAL('users_id_seq', (SELECT MAX(id) FROM users));
-
