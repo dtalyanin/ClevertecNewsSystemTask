@@ -1,10 +1,11 @@
 package ru.clevertec.news.integration.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import ru.clevertec.news.integration.BaseIntegrationTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class CommentsControllerTest {
+@AutoConfigureMockMvc
+class CommentsControllerTest extends BaseIntegrationTest {
 
     @Test
     void getCommentsWithPagination() {

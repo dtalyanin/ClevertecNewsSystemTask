@@ -2,7 +2,7 @@ package ru.clevertec.news.utils;
 
 import ru.clevertec.news.clients.dto.Permission;
 import ru.clevertec.news.clients.dto.Role;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 
 public class UserHelper {
 

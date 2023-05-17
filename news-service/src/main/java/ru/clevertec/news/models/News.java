@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.clevertec.news.utils.constants.MessageConstants.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -22,15 +24,15 @@ public class News implements BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @NotBlank(message = "News title cannot be empty")
-    @Size(max = 200, message = "Max length of title is 200 characters")
+    @NotBlank(message = EMPTY_NEWS_TITLE)
+    @Size(max = 200, message = TOO_LONG_NEWS_TITLE)
     @Column(name = "title", nullable = false, length = 200)
     private String title;
-    @NotBlank(message = "News body cannot be empty")
+    @NotBlank(message = EMPTY_NEWS_TEXT)
     @Column(name = "text", nullable = false)
     private String text;
-    @NotBlank(message = "News must contain username")
-    @Size(max = 50, message = "Max length of username is 50 characters")
+    @NotBlank(message = NULL_NEWS_USERNAME)
+    @Size(max = 50, message = TOO_LONG_NEWS_USERNAME)
     @Column(name = "username", nullable = false, updatable = false, length = 50)
     private String username;
     @EqualsAndHashCode.Exclude

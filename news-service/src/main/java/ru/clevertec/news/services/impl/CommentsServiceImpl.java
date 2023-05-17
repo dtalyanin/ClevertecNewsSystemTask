@@ -17,7 +17,7 @@ import ru.clevertec.news.dao.NewsRepository;
 import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.dto.comments.CreateCommentDto;
 import ru.clevertec.news.dto.comments.UpdateCommentDto;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 import ru.clevertec.news.models.Comment;
 import ru.clevertec.news.models.News;
 import ru.clevertec.news.models.Operation;

@@ -12,7 +12,7 @@ import ru.clevertec.loggers.annotations.ControllerLog;
 import ru.clevertec.news.clients.services.UsersService;
 import ru.clevertec.news.dto.news.ModificationNewsDto;
 import ru.clevertec.news.dto.news.NewsDto;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 import ru.clevertec.news.models.responses.ModificationResponse;
 import ru.clevertec.news.services.NewsService;
 

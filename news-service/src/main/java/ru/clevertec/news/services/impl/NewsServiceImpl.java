@@ -17,7 +17,7 @@ import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.dto.news.ModificationNewsDto;
 import ru.clevertec.news.dto.news.NewsDto;
 import ru.clevertec.news.dto.news.NewsWithCommentsDto;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 import ru.clevertec.news.models.Comment;
 import ru.clevertec.news.models.News;
 import ru.clevertec.news.models.Operation;

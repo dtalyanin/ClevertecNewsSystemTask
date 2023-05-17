@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import ru.clevertec.news.dto.news.ModificationNewsDto;
 import ru.clevertec.news.dto.news.NewsDto;
 import ru.clevertec.news.dto.news.NewsWithCommentsDto;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 
 import java.util.List;
 

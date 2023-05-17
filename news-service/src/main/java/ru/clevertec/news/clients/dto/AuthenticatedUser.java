@@ -1,8 +1,7 @@
-package ru.clevertec.news.models;
+package ru.clevertec.news.clients.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.clevertec.news.clients.dto.Role;
 
 @Data
 @AllArgsConstructor

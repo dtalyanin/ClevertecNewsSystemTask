@@ -7,8 +7,12 @@ import ru.clevertec.news.models.BaseEntity;
 import java.io.Serializable;
 
 public class SearchHelper {
+
+    private static final String ID_COLUMN = "id";
+
     private static final ExampleMatcher MATCHER = ExampleMatcher
             .matchingAll()
+            .withIgnorePaths(ID_COLUMN)
             .withIgnoreCase()
             .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 

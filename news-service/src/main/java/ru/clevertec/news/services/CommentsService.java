@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.dto.comments.CreateCommentDto;
 import ru.clevertec.news.dto.comments.UpdateCommentDto;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 
 import java.util.List;
 

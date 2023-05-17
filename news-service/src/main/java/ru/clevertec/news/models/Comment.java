@@ -7,6 +7,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import static ru.clevertec.news.utils.constants.MessageConstants.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -20,11 +22,11 @@ public class Comment implements BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @NotBlank(message = "Comment cannot be empty")
+    @NotBlank(message = EMPTY_COMMENT_TEXT)
     @Column(name = "text", nullable = false)
     private String text;
-    @NotBlank(message = "Comment must contain username")
-    @Size(max = 50, message = "Max length of username is 50 characters")
+    @NotBlank(message = NULL_COMMENT_USERNAME)
+    @Size(max = 50, message = TOO_LONG_NEWS_USERNAME)
     @Column(name = "username", nullable = false, updatable = false, length = 50)
     private String username;
     @ManyToOne

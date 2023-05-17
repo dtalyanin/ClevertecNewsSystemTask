@@ -1,8 +1,7 @@
 package ru.clevertec.news.utils.mappers;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
+import org.springframework.validation.annotation.Validated;
 import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.dto.news.ModificationNewsDto;
 import ru.clevertec.news.dto.news.NewsDto;
@@ -11,7 +10,10 @@ import ru.clevertec.news.models.News;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = CommentsMapper.class)
+@Mapper(componentModel = "spring", uses = CommentsMapper.class,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Validated
 public interface NewsMapper {
 
     NewsDto convertNewsToDto(News news);

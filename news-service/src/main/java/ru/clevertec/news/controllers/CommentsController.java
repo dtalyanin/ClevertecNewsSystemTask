@@ -1,5 +1,6 @@
 package ru.clevertec.news.controllers;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import ru.clevertec.news.clients.services.UsersService;
 import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.dto.comments.CreateCommentDto;
 import ru.clevertec.news.dto.comments.UpdateCommentDto;
-import ru.clevertec.news.models.AuthenticatedUser;
+import ru.clevertec.news.clients.dto.AuthenticatedUser;
 import ru.clevertec.news.models.responses.ModificationResponse;
 import ru.clevertec.news.services.CommentsService;
 
@@ -51,7 +52,7 @@ public class CommentsController {
     @PostMapping
     public ResponseEntity<ModificationResponse> addComment(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            @RequestBody CreateCommentDto dto) {
+            @RequestBody @Valid CreateCommentDto dto) {
         AuthenticatedUser user = usersService.getUserByUsername(getJwtTokenFromAuthHeader(token));
         CommentDto createdDto = commentsService.addComment(dto, user);
         ModificationResponse response = new ModificationResponse(createdDto.getId(), COMMENT_ADDED);
