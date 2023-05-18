@@ -1,22 +1,22 @@
 package ru.clevertec.users.utils.mappers;
 
-import generators.factories.CreateDtoFactory;
-import generators.factories.UpdateDtoFactory;
-import generators.factories.UserFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.clevertec.exceptions.exceptions.PasswordException;
-import ru.clevertec.users.dto.CreateDto;
+import ru.clevertec.users.dto.UserDto;
 import ru.clevertec.users.models.User;
 
-import static generators.factories.UpdateDtoFactory.*;
+import java.util.List;
+
+import static generators.factories.CreateDtoFactory.getCreateDto;
+import static generators.factories.UpdateDtoFactory.getUpdateDto;
+import static generators.factories.UserDtoFactory.getAllUserDtos;
+import static generators.factories.UserDtoFactory.getSubscriberDto;
 import static generators.factories.UserFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,26 +31,40 @@ class UsersMapperTest {
     @Mock
     private PasswordEncoder encoder;
 
-    private String encodedPassword = "$2a$12$kdKrgZgEEmQSzgWiGs.6AOErkFP1tXvxJ.4gtnpQAVZyNmFC7cZn2";
+    private final String encodedPassword = "$2a$12$kdKrgZgEEmQSzgWiGs.6AOErkFP1tXvxJ.4gtnpQAVZyNmFC7cZn2";
 
     @Test
-    void convertUserToDto() {
+    void checkConvertUserToDtoShouldReturnSubscriberDto() {
+        UserDto actualDto = mapper.convertUserToDto(getSubscriber());
+        UserDto expectedDto = getSubscriberDto();
+
+        assertThat(actualDto).isEqualTo(expectedDto);
     }
 
     @Test
-    void convertAllUsersToDtos() {
+    void checkConvertAllUsersToDtos() {
+        List<UserDto> actualDtos = mapper.convertAllUsersToDtos(getAllUsers());
+        List<UserDto> expectedDtos = getAllUserDtos();
+
+        assertThat(actualDtos).isEqualTo(expectedDtos);
     }
 
     @Test
-    void checkUpdateUser() {
-        mapper.updateUser(getUpdateDto());
+    void checkUpdateUserShouldUpdateRoleAndPassword() {
+        doReturn(encodedPassword).when(encoder).encode(anyString());
+        User updatedUser = getAdmin();
+        mapper.updateUser(updatedUser, getUpdateDto());
+
+        assertThat(updatedUser).isEqualTo(getUpdatedUser());
+
+        verify(encoder).encode(anyString());
     }
 
     @Test
     void checkConvertDtoToUserShouldReturnCreatedUserWithoutId() {
         doReturn(encodedPassword).when(encoder).encode(anyString());
 
-        User actualUser = mapper.convertDtoToUser(CreateDtoFactory.getCreateDto());
+        User actualUser = mapper.convertDtoToUser(getCreateDto());
         User expectedUser = getCreatedUser();
 
         assertThat(actualUser).isEqualTo(expectedUser);

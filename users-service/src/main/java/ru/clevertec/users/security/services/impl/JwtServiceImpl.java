@@ -21,14 +21,6 @@ public class JwtServiceImpl implements JwtService {
     private final String secretKey;
     private final long tokenLifetime;
 
-    public String getSecretKey() {
-        return secretKey;
-    }
-
-    public long getTokenLifetime() {
-        return tokenLifetime;
-    }
-
     public JwtServiceImpl(@Value("${jwt.secret-key}") String secretKey, @Value("${jwt.lifetime}") long tokenLifetime) {
         this.secretKey = secretKey;
         this.tokenLifetime = tokenLifetime;
