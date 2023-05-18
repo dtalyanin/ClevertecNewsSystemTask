@@ -154,7 +154,7 @@ public class CommentDtoFactory {
         return List.of(getCommentDto1FromUser(), getCommentDto2FromUser());
     }
 
-    public static List<CommentDto> getFirst2Comments() {
+    public static List<CommentDto> getFirst2CommentsDto() {
         return List.of(getCommentDto1FromUser(), getCommentDto2FromUser());
     }
 
@@ -162,7 +162,7 @@ public class CommentDtoFactory {
         return List.of(getCommentDto3FromUser2(), getCommentDto4FromUser3());
     }
 
-    public static List<CommentDto> getEmptyListComments() {
+    public static List<CommentDto> getCommentsDtoEmptyList() {
         return Collections.emptyList();
     }
 

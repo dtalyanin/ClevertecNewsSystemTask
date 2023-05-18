@@ -63,7 +63,7 @@ public class NewsDtoFactory {
         dto.setText("Text");
         dto.setUsername("User");
         dto.setTime(LocalDateTime.parse("2023-01-01T10:00:00"));
-        dto.setComments(getFirst2Comments());
+        dto.setComments(getFirst2CommentsDto());
         return dto;
     }
 
@@ -74,7 +74,7 @@ public class NewsDtoFactory {
         dto.setText("Text 3");
         dto.setUsername("User 3");
         dto.setTime(LocalDateTime.parse("2023-03-01T10:00:00"));
-        dto.setComments(getEmptyListComments());
+        dto.setComments(getCommentsDtoEmptyList());
         return dto;
     }
 

@@ -40,7 +40,7 @@ class CommentsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetCommentsWithPaginationShouldReturn2CommentsWithPageSize2() {
         List<CommentDto> actualComments = service.getCommentsWithPagination(getPageableWithSize2());
-        List<CommentDto> expectedComments = getFirst2Comments();
+        List<CommentDto> expectedComments = getFirst2CommentsDto();
 
         assertThat(actualComments).isEqualTo(expectedComments);
     }

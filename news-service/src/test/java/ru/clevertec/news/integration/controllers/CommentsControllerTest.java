@@ -47,7 +47,7 @@ class CommentsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetCommentsWithPaginationShouldReturn2CommentsWithPageSize2() {
-        String jsonComments = mapper.writeValueAsString(getFirst2Comments());
+        String jsonComments = mapper.writeValueAsString(getFirst2CommentsDto());
 
         mvc.perform(get("/comments")
                         .param("size", "2"))
@@ -72,7 +72,7 @@ class CommentsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetCommentsWithPaginationShouldReturnEmptyListWhenOutOfRange() {
-        String jsonComments = mapper.writeValueAsString(getEmptyListComments());
+        String jsonComments = mapper.writeValueAsString(getCommentsDtoEmptyList());
 
         mvc.perform(get("/comments")
                         .param("size", "10")
@@ -159,7 +159,7 @@ class CommentsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedCommentsWithPaginationShouldReturnEmptyListUsernameNotExist() {
-        String jsonComments = mapper.writeValueAsString(getEmptyListComments());
+        String jsonComments = mapper.writeValueAsString(getCommentsDtoEmptyList());
 
         mvc.perform(get("/comments/search")
                         .param("username", "User not exist"))
@@ -171,7 +171,7 @@ class CommentsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedCommentsWithPaginationShouldReturnEmptyListTextNotExist() {
-        String jsonComments = mapper.writeValueAsString(getEmptyListComments());
+        String jsonComments = mapper.writeValueAsString(getCommentsDtoEmptyList());
 
         mvc.perform(get("/comments/search")
                         .param("text", "Text not exist"))
@@ -183,7 +183,7 @@ class CommentsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedCommentsWithPaginationShouldReturnEmptyListDateNotExist() {
-        String jsonComments = mapper.writeValueAsString(getEmptyListComments());
+        String jsonComments = mapper.writeValueAsString(getCommentsDtoEmptyList());
 
         mvc.perform(get("/comments/search")
                         .param("time", "2022-02-01T12:00:00"))
