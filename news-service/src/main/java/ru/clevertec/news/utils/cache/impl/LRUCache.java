@@ -8,6 +8,12 @@ import java.util.Map;
 
 import static ru.clevertec.news.utils.constants.MessageConstants.WRONG_CACHE_CAPACITY;
 
+/**
+ * Least Recently Used (LRU) cache algorithm remove the least recently used frame when the cache is full
+ * and a new page is referenced which is not there in the cache. Please see the Galvin book for more details
+ *
+ * @param <T> type that cache should work with
+ */
 public class LRUCache<T> implements Cache<T> {
 
     private final long capacity;
@@ -30,12 +36,6 @@ public class LRUCache<T> implements Cache<T> {
         tail.prev = head;
     }
 
-    /**
-     * Get value with the specified ID from cache if exist or else return null
-     *
-     * @param key value ID to search
-     * @return value - if a value with the specified ID exists or else null
-     */
     @Override
     public T get(long key) {
         Node<T> current = elements.get(key);
@@ -47,12 +47,6 @@ public class LRUCache<T> implements Cache<T> {
         return value;
     }
 
-    /**
-     * Put value in cache with the specified ID
-     *
-     * @param key   value ID to add
-     * @param value value to add
-     */
     @Override
     public void put(long key, T value) {
         if (elements.containsKey(key)) {
@@ -70,11 +64,6 @@ public class LRUCache<T> implements Cache<T> {
         }
     }
 
-    /**
-     * Delete value from cache with the specified ID
-     *
-     * @param key value ID to delete
-     */
     @Override
     public void delete(long key) {
         Node<T> removed = elements.remove(key);
@@ -83,11 +72,6 @@ public class LRUCache<T> implements Cache<T> {
         }
     }
 
-    /**
-     * Add node to the head of queue
-     *
-     * @param node node to move
-     */
     private void addToHead(Node<T> node) {
         node.next = head.next;
         node.prev = head;

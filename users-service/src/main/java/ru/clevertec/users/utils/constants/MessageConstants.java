@@ -1,5 +1,8 @@
 package ru.clevertec.users.utils.constants;
 
+/**
+ * Class with constants for messages
+ */
 public class MessageConstants {
 
     public static final String USER_ADDED = "User added successfully";

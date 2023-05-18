@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * Response when several incorrect fields were exception cause
+ */
 @Getter
 @AllArgsConstructor
 public class MultipleFieldsValidationResponse extends ValidationResponse {

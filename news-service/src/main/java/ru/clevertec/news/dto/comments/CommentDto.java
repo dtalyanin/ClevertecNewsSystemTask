@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO representation of comment
+ */
 @Data
 public class CommentDto {
     @JsonIgnore

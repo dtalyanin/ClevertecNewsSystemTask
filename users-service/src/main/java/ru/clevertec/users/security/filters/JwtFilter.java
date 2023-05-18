@@ -23,6 +23,9 @@ import ru.clevertec.users.security.services.JwtService;
 
 import java.io.IOException;
 
+/**
+ * Security filter for authentication with token
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {

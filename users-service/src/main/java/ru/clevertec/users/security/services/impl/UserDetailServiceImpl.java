@@ -13,6 +13,9 @@ import java.util.Optional;
 
 import static ru.clevertec.users.utils.constants.MessageConstants.USERNAME_NOT_FOUND;
 
+/**
+ * UserDetailsService for getting UserDetails from DB
+ */
 @Service
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {

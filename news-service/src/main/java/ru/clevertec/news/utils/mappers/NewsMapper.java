@@ -11,6 +11,9 @@ import ru.clevertec.news.models.News;
 
 import java.util.List;
 
+/**
+ * Mapper for converting news
+ */
 @Mapper(componentModel = "spring", uses = CommentsMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)

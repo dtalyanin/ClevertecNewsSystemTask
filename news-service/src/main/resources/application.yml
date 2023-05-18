@@ -7,3 +7,10 @@ spring:
 
   config:
     import: optional:configserver:http://localhost:8888
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          users-service:
+            url: http://localhost:8090

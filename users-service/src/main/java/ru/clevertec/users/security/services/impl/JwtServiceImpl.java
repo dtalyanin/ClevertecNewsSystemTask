@@ -15,6 +15,9 @@ import java.util.function.Function;
 
 import static ru.clevertec.users.utils.constants.MessageConstants.TOKEN_NOT_VALID;
 
+/**
+ * Service for performing operations with jwt token
+ */
 @Service
 public class JwtServiceImpl implements JwtService {
 
@@ -53,11 +56,23 @@ public class JwtServiceImpl implements JwtService {
         return extractExpiration(token).before(new Date(System.currentTimeMillis()));
     }
 
+    /**
+     * Get claim from jwt
+     * @param token jwt token
+     * @param claimsResolver function for getting concrete claim
+     * @return extreacted claim
+     * @param <T> type of claim
+     */
     private  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
+    /**
+     * Get all existing in token claims
+     * @param token jwt token
+     * @return all claims from token
+     */
     private Claims extractAllClaims(String token) {
         try {
             return Jwts
@@ -75,10 +90,19 @@ public class JwtServiceImpl implements JwtService {
         }
     }
 
+    /**
+     * Get date of expiration from token
+     * @param token jwt token
+     * @return date of expiration
+     */
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    /**
+     * Get key for encode and decode jwt token
+     * @return key
+     */
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

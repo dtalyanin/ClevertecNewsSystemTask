@@ -3,6 +3,9 @@ package ru.clevertec.exceptions.exceptions;
 import lombok.Getter;
 import ru.clevertec.exceptions.models.ErrorCode;
 
+/**
+ * User with similar username already exist id DB exception
+ */
 @Getter
 public class UserExistException extends IllegalArgumentException {
 

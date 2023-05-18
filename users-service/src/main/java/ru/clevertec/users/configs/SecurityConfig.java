@@ -20,6 +20,9 @@ import ru.clevertec.users.security.filters.JwtFilter;
 
 import static org.springframework.http.HttpMethod.*;
 
+/**
+ * Security configuration for protecting application
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

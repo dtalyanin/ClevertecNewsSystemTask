@@ -37,12 +37,6 @@ public class LFUCache<T> implements Cache<T> {
         tail.prev = head;
     }
 
-    /**
-     * Get value with the specified ID from cache if exist or else return null
-     *
-     * @param key value ID to search
-     * @return value - if a value with the specified ID exists or else null
-     */
     @Override
     public T get(long key) {
         Node<T> current = elements.get(key);
@@ -54,12 +48,6 @@ public class LFUCache<T> implements Cache<T> {
         return value;
     }
 
-    /**
-     * Put value in cache with the specified ID
-     *
-     * @param key   value ID to add
-     * @param value value to add
-     */
     @Override
     public void put(long key, T value) {
         if (elements.containsKey(key)) {
@@ -77,11 +65,6 @@ public class LFUCache<T> implements Cache<T> {
         }
     }
 
-    /**
-     * Delete value from cache with the specified ID
-     *
-     * @param key value ID to delete
-     */
     @Override
     public void delete(long key) {
         Node<T> removed = elements.remove(key);

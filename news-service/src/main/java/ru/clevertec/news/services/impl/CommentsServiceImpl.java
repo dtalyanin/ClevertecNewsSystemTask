@@ -32,6 +32,9 @@ import static ru.clevertec.news.utils.SearchHelper.getExample;
 import static ru.clevertec.news.utils.UserHelper.*;
 import static ru.clevertec.news.utils.constants.MessageConstants.*;
 
+/**
+ * Service for performing CRUD operation with comments in DB
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -48,6 +51,7 @@ public class CommentsServiceImpl implements CommentsService {
         return mapper.convertAllCommentsToDtos(repository.findAll(pageable).getContent());
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<CommentDto> getAllSearchedCommentsWithPagination(CommentDto dto, Pageable pageable) {
         pageable = setPageableUnsorted(pageable);
@@ -114,6 +118,12 @@ public class CommentsServiceImpl implements CommentsService {
     public void triggerCacheEvict(long id) {
     }
 
+    /**
+     * Get comment by ID from DB
+     * @param id ID for getting comment
+     * @param operation type of operation for performing
+     * @return comment with specified ID
+     */
     private Comment getCommentByIdIfExist(long id, Operation operation) {
         Optional<Comment> oComment = repository.findById(id);
         if (oComment.isEmpty()) {
@@ -123,6 +133,13 @@ public class CommentsServiceImpl implements CommentsService {
         return oComment.get();
     }
 
+    /**
+     * Get comment by ID from DB and check user permissions for performing operation
+     * @param id ID for getting comment
+     * @param user authenticated user to check permissions
+     * @param operation type of operation for performing
+     * @return comment with specified ID
+     */
     private Comment getCommentAndVerifyUserPermissions(long id, AuthenticatedUser user, Operation operation) {
         checkUserHasPermission(user, operation);
         Comment comment = getCommentByIdIfExist(id, operation);
@@ -130,6 +147,11 @@ public class CommentsServiceImpl implements CommentsService {
         return comment;
     }
 
+    /**
+     * Check user permissions for performing operation with comment
+     * @param user authenticated user to check permissions
+     * @param operation type of operation for performing
+     */
     private void checkUserHasPermission(AuthenticatedUser user, Operation operation) {
         if (checkUserHasNotPermission(user, Permission.COMMENTS_MENAGE)) {
             String message = NOT_PERMISSIONS + CANNOT_END + operation.getName();
@@ -137,6 +159,12 @@ public class CommentsServiceImpl implements CommentsService {
         }
     }
 
+    /**
+     * Check user has access to perform operation because it is owner or admin
+     * @param user authenticated user to check
+     * @param comment comment for performing operation
+     * @param operation type of operation for performing
+     */
     private void checkUserIsCommentOwner(AuthenticatedUser user, Comment comment, Operation operation) {
         if (checkUserIsNotOwner(user, comment.getUsername())) {
             String message = NOT_COMMENT_OWNER + CANNOT_END + operation.getName();

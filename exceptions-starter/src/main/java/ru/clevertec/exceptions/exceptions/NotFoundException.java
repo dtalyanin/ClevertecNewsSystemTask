@@ -3,6 +3,9 @@ package ru.clevertec.exceptions.exceptions;
 import lombok.Getter;
 import ru.clevertec.exceptions.models.ErrorCode;
 
+/**
+ * Searched item not found
+ */
 @Getter
 public class NotFoundException extends IllegalArgumentException {
     private final Object incorrectValue;

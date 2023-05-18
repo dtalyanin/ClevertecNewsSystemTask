@@ -21,6 +21,9 @@ import java.util.List;
 
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
+/**
+ * Controller for performing operations with users entity
+ */
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -30,22 +33,41 @@ public class UsersController {
 
     private final UsersService service;
 
+    /**
+     * Get all existing users and return them according to chosen size and page
+     * @param pageable page and maximum size of returning collections
+     * @return list of users DTO
+     */
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsersWithPagination(Pageable pageable) {
         return ResponseEntity.ok(service.getAllUsersWithPagination(pageable));
     }
 
-
+    /**
+     * Get user with specified ID
+     * @param id ID to search
+     * @return user DTO with specified ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
         return ResponseEntity.ok(service.getUserById(id));
     }
 
+    /**
+     * Get user by token
+     * @param token user token
+     * @return user DTO that contained in token
+     */
     @GetMapping("/token/{token}")
     public ResponseEntity<UserDto> getUserByToken(@PathVariable @NotBlank(message = EMPTY_TOKEN) String token) {
         return ResponseEntity.ok(service.getUserByToken(token));
     }
 
+    /**
+     * Add new user to repository
+     * @param dto user DTO to add
+     * @return response with created ID
+     */
     @PostMapping
     public ResponseEntity<ModificationResponse> addUser(@RequestBody @Valid CreateDto dto) {
         UserDto createdDto = service.addUser(dto);
@@ -57,6 +79,12 @@ public class UsersController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    /**
+     * Update user with specified ID to values that contain DTO
+     * @param id ID to update
+     * @param dto DTO with values to update
+     * @return response with updated ID
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateUser(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, @RequestBody @Valid UpdateDto dto) {
@@ -65,6 +93,11 @@ public class UsersController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Delete user with specified ID
+     * @param id ID to delete
+     * @return response with deleted ID
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteUserById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {

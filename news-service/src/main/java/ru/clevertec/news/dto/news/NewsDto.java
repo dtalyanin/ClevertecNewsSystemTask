@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO representation of news
+ */
 @Data
 public class NewsDto {
     @JsonIgnore

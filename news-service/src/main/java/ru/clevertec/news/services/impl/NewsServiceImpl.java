@@ -33,6 +33,9 @@ import static ru.clevertec.news.utils.SearchHelper.getExample;
 import static ru.clevertec.news.utils.UserHelper.*;
 import static ru.clevertec.news.utils.constants.MessageConstants.*;
 
+/**
+ * Service for performing CRUD operation with news in DB
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -104,6 +107,12 @@ public class NewsServiceImpl implements NewsService {
         commentsIds.forEach(commentsService::triggerCacheEvict);
     }
 
+    /**
+     * Get news by ID from DB
+     * @param id ID for getting news
+     * @param operation type of operation for performing
+     * @return news with specified ID
+     */
     private News getNewsByIdIfExist(long id, Operation operation) {
         Optional<News> oNews = repository.findById(id);
         if (oNews.isEmpty()) {
@@ -113,6 +122,13 @@ public class NewsServiceImpl implements NewsService {
         return oNews.get();
     }
 
+    /**
+     * Get news by ID from DB and check user permissions for performing operation
+     * @param id ID for getting news
+     * @param user authenticated user to check permissions
+     * @param operation type of operation for performing
+     * @return news with specified ID
+     */
     private News getNewsAndVerifyUserPermissions(long id, AuthenticatedUser user, Operation operation) {
         checkUserHasPermission(user, operation);
         News news = getNewsByIdIfExist(id, operation);
@@ -120,13 +136,23 @@ public class NewsServiceImpl implements NewsService {
         return news;
     }
 
+    /**
+     * Check user permissions for performing operation with news
+     * @param user authenticated user to check permissions
+     * @param operation type of operation for performing
+     */
     private void checkUserHasPermission(AuthenticatedUser user, Operation operation) {
         if (checkUserHasNotPermission(user, Permission.NEWS_MANAGE)) {
             String message = NOT_PERMISSIONS + CANNOT_END + operation.getName();
             throw new AccessException(message, ErrorCode.NO_PERMISSIONS_FOR_NEWS_MODIFICATION);
         }
     }
-
+    /**
+     * Check user has access to perform operation because it is owner or admin
+     * @param user authenticated user to check
+     * @param news news for performing operation
+     * @param operation type of operation for performing
+     */
     private void checkUserIsNewsOwner(AuthenticatedUser user, News news, Operation operation) {
         if (checkUserIsNotOwner(user, news.getUsername())) {
             String message = NOT_NEWS_OWNER + CANNOT_END + operation.getName();

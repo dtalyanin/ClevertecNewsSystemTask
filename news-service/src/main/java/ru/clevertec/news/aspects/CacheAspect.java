@@ -20,7 +20,7 @@ import static ru.clevertec.news.utils.constants.MessageConstants.CANNOT_GET_FIEL
 import static ru.clevertec.news.utils.constants.MessageConstants.FIELD_NOT_PRESENT;
 
 /**
- * Aspect that intercepts calls to the products DAO and implements work with the cache
+ * Aspect that intercepts calls to the services and implements work with the cache
  */
 @Aspect
 @Component
@@ -34,13 +34,14 @@ public class CacheAspect {
     private final CacheFacade cacheFacade;
 
     /**
-     * Intercepts calls getProductById and look in the cache, if there is no data then get the object
-     * from the DAO, save it in the cache and return
+     * Intercepts get calls and look in cache, if there is no data then get object
+     * from service, save it in cache and return
      *
-     * @param jp exposes the proceed(..) method in order to support around advice in @AJ aspects
-     * @param id product ID to search
-     * @return product with specified id
-     * @throws Throwable if the invoked proceed throws anything
+     * @param jp Exposes the proceed(..) method in order to support around advice in @AJ aspects
+     * @param cacheable annotation that trigger operation with cache
+     * @param id ID to search
+     * @return Item with specified id
+     * @throws Throwable  if the invoked proceed throws anything
      */
     @Around("@annotation(cacheable) && args(id)")
     public Object getFromCache(ProceedingJoinPoint jp, Cacheable cacheable, long id) throws Throwable {
@@ -54,8 +55,9 @@ public class CacheAspect {
     }
 
     /**
-     * Save product in DAO and then save in the cache
-     *
+     * Save or update item and then save it in cache
+     * @param cachePut annotation that trigger operation with cache
+     * @param value returned value after operation executing
      */
     @AfterReturning(value = "@annotation(cachePut)", returning = "value")
     public void putInCache(CachePut cachePut, Object value) {
@@ -65,9 +67,9 @@ public class CacheAspect {
     }
 
     /**
-     * Delete product with specified ID in DAO and in the cache
-     *
-     * @param id product ID to delete
+     * Delete item with specified ID in service and in cache
+     * @param cacheEvict annotation that trigger operation with cache
+     * @param id item ID to delete
      */
     @AfterReturning("@annotation(cacheEvict) && args(id,..)")
     public void deleteFromCache(CacheEvict cacheEvict, long id) {
@@ -75,6 +77,11 @@ public class CacheAspect {
         cacheFacade.delete(cacheName, id);
     }
 
+    /**
+     * Get ID from object with help of reflection
+     * @param value object for getting ID
+     * @return value ID
+     */
     private Long getIdFromObject(Object value) {
         try {
             Field idField = value.getClass().getDeclaredField(ID_FIELD);

@@ -1,5 +1,8 @@
 package ru.clevertec.news.utils.constants;
 
+/**
+ * Class with constants for messages
+ */
 public class MessageConstants {
     public static final String MIN_ID_MESSAGE = "Min ID value is 1";
     public static final String INCORRECT_TOKEN = "Incorrect token structure";

@@ -1,4 +1,4 @@
-CREATE TABLE news
+CREATE TABLE  IF NOT EXISTS news
 (
     id           BIGSERIAL PRIMARY KEY,
     title        VARCHAR(200) NOT NULL CHECK (length(title) > 0),
@@ -7,7 +7,7 @@ CREATE TABLE news
     created_time TIMESTAMP    NOT NULL
 );
 
-CREATE TABLE comments
+CREATE TABLE  IF NOT EXISTS comments
 (
     id           BIGSERIAL PRIMARY KEY,
     text         VARCHAR     NOT NULL CHECK (length(text) > 0),

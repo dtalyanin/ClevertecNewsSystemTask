@@ -8,6 +8,9 @@ import ru.clevertec.users.models.Role;
 
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
+/**
+ * DTO for creating user
+ */
 @Data
 public class CreateDto {
     @NotBlank(message = EMPTY_USERNAME)

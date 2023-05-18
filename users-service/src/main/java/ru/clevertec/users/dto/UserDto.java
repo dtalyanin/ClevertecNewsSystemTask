@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import ru.clevertec.users.models.Role;
 
+/**
+ * DTO representation of user
+ */
 @Data
 public class UserDto {
     @JsonIgnore

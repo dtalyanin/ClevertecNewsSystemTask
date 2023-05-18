@@ -3,6 +3,9 @@ package ru.clevertec.exceptions.exceptions;
 import lombok.Getter;
 import ru.clevertec.exceptions.models.ErrorCode;
 
+/**
+ * User not authenticated exception
+ */
 @Getter
 public class AuthenticationException extends IllegalArgumentException {
 

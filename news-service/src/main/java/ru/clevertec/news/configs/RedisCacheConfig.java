@@ -13,6 +13,9 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 
+/**
+ * Redis configuration for performing cache operations
+ */
 @Configuration
 @EnableCaching
 @Profile("prod")

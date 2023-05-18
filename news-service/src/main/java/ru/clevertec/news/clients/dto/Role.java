@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Role that authenticated user can have and its permissions
+ */
 @RequiredArgsConstructor
 @Getter
 public enum Role {

@@ -9,6 +9,9 @@ import lombok.*;
 import static jakarta.persistence.EnumType.STRING;
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
+/**
+ * User entity for DB
+ */
 @Getter
 @Setter
 @AllArgsConstructor

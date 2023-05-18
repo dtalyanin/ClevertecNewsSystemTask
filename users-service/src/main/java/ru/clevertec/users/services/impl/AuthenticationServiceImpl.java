@@ -14,6 +14,9 @@ import ru.clevertec.users.services.AuthenticationService;
 
 import static ru.clevertec.users.utils.constants.MessageConstants.INCORRECT_AUTH_DATA;
 
+/**
+ * Service for authenticating and generating token for authenticated user with authentication manager
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {

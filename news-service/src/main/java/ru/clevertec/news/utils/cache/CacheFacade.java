@@ -13,6 +13,10 @@ import java.util.Map;
 import static ru.clevertec.news.utils.constants.CacheConstants.COMMENTS_CACHE;
 import static ru.clevertec.news.utils.constants.CacheConstants.NEWS_CACHE;
 
+/**
+ * Cache that store news and comments cache implementation. Used cache depends on param, that
+ * must be transferred in method
+ */
 @Component
 @Profile("dev")
 public class CacheFacade {
@@ -28,18 +32,43 @@ public class CacheFacade {
         caches.put(COMMENTS_CACHE, commentDtoCache);
     }
 
+    /**
+     * Get value with the specified ID from cache if exist or else return null
+     * @param source cache type
+     * @param key value ID to search
+     * @return value - if a value with the specified ID exists or else null
+     */
     public Object get(String source, long key) {
         Cache<?> cache = caches.get(source);
-        return cache.get(key);
+        if (cache != null) {
+            return cache.get(key);
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Put value in cache with the specified ID
+     * @param source cache type
+     * @param key value ID to add
+     * @param value value to add
+     */
     public void put(String source, long key, Object value) {
         Cache cache = caches.get(source);
-        cache.put(key, value);
+        if (cache != null) {
+            cache.put(key, value);
+        }
     }
 
+    /**
+     * Delete value from cache with the specified ID
+     * @param source cache type
+     * @param key value ID to delete
+     */
     public void delete(String source, long key) {
         Cache<?> cache = caches.get(source);
-        cache.delete(key);
+        if (cache != null) {
+            cache.delete(key);
+        }
     }
 }
