@@ -132,7 +132,7 @@ class UsersControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetUserByIdShouldReturnExistingUser() {
-        String jsonUser = mapper.writeValueAsString(getSubscriber());
+        String jsonUser = mapper.writeValueAsString(getSubscriberDto());
 
         mvc.perform(get("/users/{id}", 1L))
                 .andExpect(status().isOk())
@@ -152,7 +152,7 @@ class UsersControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetUserByTokenShouldReturnUser() {
-        String jsonUser = mapper.writeValueAsString(getSubscriber());
+        String jsonUser = mapper.writeValueAsString(getSubscriberDto());
         token = getCorrectSubscriberToken(secretKey, tokenLifetime);
 
         mvc.perform(get("/users/token/{token}", token))

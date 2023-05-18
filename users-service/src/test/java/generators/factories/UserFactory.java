@@ -42,6 +42,13 @@ public class UserFactory {
                 .build();
     }
 
+    public static User getCreatedUser() {
+        return UserTestBuilder.builder()
+                .withUsername("User new")
+                .withId(null)
+                .build();
+    }
+
     public static List<User> getAllUsers() {
         return List.of(getSubscriber(), getSubscriber2(), getSubscriber3(), getAdmin(), getJournalist());
     }

@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 class UsersServiceImplTest extends BaseIntegrationTest {
 
     @Value("${jwt.secret-key}")
@@ -36,7 +35,7 @@ class UsersServiceImplTest extends BaseIntegrationTest {
     @Autowired
     private UsersServiceImpl service;
     @Autowired
-    UsersRepository repository;
+    private UsersRepository repository;
 
     @Test
     void checkGetAllUsersWithPaginationShouldReturnAll5Users() {
@@ -81,7 +80,7 @@ class UsersServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetUserByIdShouldReturnExistingUser() {
         UserDto actualUser = service.getUserById(1L);
-        UserDto expectedUser = getSubscriber();
+        UserDto expectedUser = getSubscriberDto();
 
         assertThat(actualUser).isEqualTo(expectedUser);
     }
@@ -97,7 +96,7 @@ class UsersServiceImplTest extends BaseIntegrationTest {
     void checkGetUserByTokenShouldReturnUser() {
         String token = getCorrectSubscriberToken(secretKey, tokenLifetime);
         UserDto actualUser = service.getUserByToken(token);
-        UserDto expectedUser = getSubscriber();
+        UserDto expectedUser = getSubscriberDto();
 
         assertThat(actualUser).isEqualTo(expectedUser);
     }
@@ -126,7 +125,7 @@ class UsersServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkAddUserShouldReturnUserWithGeneratedId() {
         UserDto actualUser = service.addUser(getCreateDto());
-        UserDto expectedUser = getCreatedUser();
+        UserDto expectedUser = getCreatedUserDto();
 
         assertThat(actualUser).isEqualTo(expectedUser);
     }
@@ -200,7 +199,7 @@ class UsersServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkUpdateUserShouldReturnUserWithUpdatedRole() {
         UserDto actualUser = service.updateUser(1L, getUpdateDtoWithOnlyUpdatedRole());
-        UserDto expectedUser = getUpdatedUser();
+        UserDto expectedUser = getUpdatedUserDto();
 
         assertThat(actualUser).isEqualTo(expectedUser);
     }

@@ -9,25 +9,25 @@ import java.util.List;
 
 public class UserDtoFactory {
 
-    public static UserDto getSubscriber() {
+    public static UserDto getSubscriberDto() {
         return UserDtoTestBuilder.builder().build();
     }
 
-    public static UserDto getSubscriber2() {
+    public static UserDto getSubscriberDto2() {
         return UserDtoTestBuilder.builder()
                 .withId(2L)
                 .withUsername("User 2")
                 .build();
     }
 
-    public static UserDto getSubscriber3() {
+    public static UserDto getSubscriberDto3() {
         return UserDtoTestBuilder.builder()
                 .withId(3L)
                 .withUsername("User 3")
                 .build();
     }
 
-    public static UserDto getAdmin() {
+    public static UserDto getAdminDto() {
         return UserDtoTestBuilder.builder()
                 .withId(4L)
                 .withUsername("User 4")
@@ -35,7 +35,7 @@ public class UserDtoFactory {
                 .build();
     }
 
-    public static UserDto getJournalist() {
+    public static UserDto getJournalistDto() {
         return UserDtoTestBuilder.builder()
                 .withId(5L)
                 .withUsername("User 5")
@@ -43,7 +43,7 @@ public class UserDtoFactory {
                 .build();
     }
 
-    public static UserDto getCreatedUser() {
+    public static UserDto getCreatedUserDto() {
         return UserDtoTestBuilder.builder()
                 .withId(6L)
                 .withUsername("User new")
@@ -51,14 +51,14 @@ public class UserDtoFactory {
                 .build();
     }
 
-    public static UserDto getUpdatedUser() {
+    public static UserDto getUpdatedUserDto() {
         return UserDtoTestBuilder.builder()
                 .withRole(Role.ADMIN)
                 .build();
     }
 
     public static List<UserDto> getAllUserDtos() {
-        return List.of(getSubscriber(), getSubscriber2(), getSubscriber3(), getAdmin(), getJournalist());
+        return List.of(getSubscriberDto(), getSubscriberDto2(), getSubscriberDto3(), getAdminDto(), getJournalistDto());
     }
 
     public static List<UserDto> getEmptyListUserDtos() {
@@ -66,10 +66,10 @@ public class UserDtoFactory {
     }
 
     public static List<UserDto> getFirst2UserDtos() {
-        return List.of(getSubscriber(), getSubscriber2());
+        return List.of(getSubscriberDto(), getSubscriberDto2());
     }
 
     public static List<UserDto> getFrom2PageFirst2UserDtos() {
-        return List.of(getSubscriber3(), getAdmin());
+        return List.of(getSubscriberDto3(), getAdminDto());
     }
 }

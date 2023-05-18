@@ -18,10 +18,21 @@ import static ru.clevertec.users.utils.constants.MessageConstants.TOKEN_NOT_VALI
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
-    @Value("${jwt.lifetime}")
-    private long tokenLifetime;
+    private final String secretKey;
+    private final long tokenLifetime;
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public long getTokenLifetime() {
+        return tokenLifetime;
+    }
+
+    public JwtServiceImpl(@Value("${jwt.secret-key}") String secretKey, @Value("${jwt.lifetime}") long tokenLifetime) {
+        this.secretKey = secretKey;
+        this.tokenLifetime = tokenLifetime;
+    }
 
     @Override
     public String extractUsername(String token) {
