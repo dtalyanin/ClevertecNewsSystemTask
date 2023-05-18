@@ -1,10 +1,17 @@
 package ru.clevertec.news.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +39,7 @@ import static ru.clevertec.news.utils.constants.MessageConstants.*;
 @RequiredArgsConstructor
 @Validated
 @ControllerLog
+@Tag(name = "Comments controller", description = "Controller for performing operations with comments entity")
 public class CommentsController {
 
     private final CommentsService commentsService;
@@ -42,6 +50,11 @@ public class CommentsController {
      * @param pageable page and maximum size of returning collections
      * @return list of comments DTO
      */
+    @Operation(summary = "Get all existing comments and return them according to chosen size and page")
+    @ApiResponse(responseCode = "200", content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @GetMapping
     public ResponseEntity<List<CommentDto>> getCommentsWithPagination(Pageable pageable) {
         return ResponseEntity.ok(commentsService.getCommentsWithPagination(pageable));
@@ -53,6 +66,11 @@ public class CommentsController {
      * @param pageable page and maximum size of returning collections
      * @return list of founded comments DTO
      */
+    @Operation(summary = "Get all comments by request params and return them according to chosen size and page")
+    @ApiResponse(responseCode = "200", content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = CommentDto.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @GetMapping("/search")
     public ResponseEntity<List<CommentDto>> getAllSearchedCommentsWithPagination(CommentDto dto, Pageable pageable) {
         return ResponseEntity.ok(commentsService.getAllSearchedCommentsWithPagination(dto, pageable));
@@ -63,6 +81,11 @@ public class CommentsController {
      * @param id ID to search
      * @return comment DTO with specified ID
      */
+    @Operation(summary = "Get comment with specified ID")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = CommentDto.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @GetMapping("/{id}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
         return ResponseEntity.ok(commentsService.getCommentById(id));
@@ -74,6 +97,11 @@ public class CommentsController {
      * @param dto comment DTO to add
      * @return response with created ID
      */
+    @Operation(summary = "Add new comment to repository")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = ModificationResponse.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @PostMapping
     public ResponseEntity<ModificationResponse> addComment(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
@@ -95,6 +123,11 @@ public class CommentsController {
      * @param dto DTO with values to update
      * @return response with updated ID
      */
+    @Operation(summary = "Update comment with specified ID to values that contain DTO")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = ModificationResponse.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateComment(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,
@@ -112,6 +145,11 @@ public class CommentsController {
      * @param token token for user authentication
      * @return response with deleted ID
      */
+    @Operation(summary = "Delete comment with specified ID")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = ModificationResponse.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteCommentById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id,

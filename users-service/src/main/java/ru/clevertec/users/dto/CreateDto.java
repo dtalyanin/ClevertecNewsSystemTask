@@ -1,5 +1,6 @@
 package ru.clevertec.users.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,6 +13,7 @@ import static ru.clevertec.users.utils.constants.MessageConstants.*;
  * DTO for creating user
  */
 @Data
+@Schema(description = "DTO for creating user")
 public class CreateDto {
     @NotBlank(message = EMPTY_USERNAME)
     @Size(max = 50, message = TOO_BIG_USERNAME)

@@ -1,10 +1,18 @@
 package ru.clevertec.users.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +37,7 @@ import static ru.clevertec.users.utils.constants.MessageConstants.*;
 @RequiredArgsConstructor
 @Validated
 @ControllerLog
+@Tag(name = "Users controller", description = "Controller for performing operations with users entity")
 public class UsersController {
 
     private final UsersService service;
@@ -38,6 +47,11 @@ public class UsersController {
      * @param pageable page and maximum size of returning collections
      * @return list of users DTO
      */
+    @Operation(summary = "Get all existing users and return them according to chosen size and page")
+    @ApiResponse(responseCode = "200", content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = UserDto.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsersWithPagination(Pageable pageable) {
         return ResponseEntity.ok(service.getAllUsersWithPagination(pageable));
@@ -48,16 +62,26 @@ public class UsersController {
      * @param id ID to search
      * @return user DTO with specified ID
      */
+    @Operation(summary = "Get user with specified ID")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = UserDto.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
         return ResponseEntity.ok(service.getUserById(id));
     }
 
     /**
-     * Get user by token
+     * Get user by jwt token
      * @param token user token
      * @return user DTO that contained in token
      */
+    @Operation(summary = "Get user by jwt token")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = UserDto.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+
     @GetMapping("/token/{token}")
     public ResponseEntity<UserDto> getUserByToken(@PathVariable @NotBlank(message = EMPTY_TOKEN) String token) {
         return ResponseEntity.ok(service.getUserByToken(token));
@@ -68,6 +92,12 @@ public class UsersController {
      * @param dto user DTO to add
      * @return response with created ID
      */
+    @Operation(summary = "Add new user to repository")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = ModificationResponse.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @SecurityRequirement(name = "Bearer Authentication")
+
     @PostMapping
     public ResponseEntity<ModificationResponse> addUser(@RequestBody @Valid CreateDto dto) {
         UserDto createdDto = service.addUser(dto);
@@ -85,6 +115,12 @@ public class UsersController {
      * @param dto DTO with values to update
      * @return response with updated ID
      */
+    @Operation(summary = "Update user with specified ID to values that contain DTO")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = ModificationResponse.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @SecurityRequirement(name = "Bearer Authentication")
+
     @PatchMapping("/{id}")
     public ResponseEntity<ModificationResponse> updateUser(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id, @RequestBody @Valid UpdateDto dto) {
@@ -98,6 +134,12 @@ public class UsersController {
      * @param id ID to delete
      * @return response with deleted ID
      */
+    @Operation(summary = "Delete user with specified ID")
+    @ApiResponse(responseCode = "200", content = @Content(
+            schema = @Schema(implementation = ModificationResponse.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @SecurityRequirement(name = "Bearer Authentication")
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ModificationResponse> deleteUserById(
             @PathVariable @Min(value = 1, message = MIN_ID_MESSAGE) long id) {
