@@ -11,7 +11,7 @@ import ru.clevertec.news.dao.NewsRepository;
 import ru.clevertec.news.dto.news.NewsDto;
 import ru.clevertec.news.dto.news.NewsWithCommentsDto;
 import ru.clevertec.news.integration.BaseIntegrationTest;
-import ru.clevertec.news.models.Operation;
+import ru.clevertec.news.models.enums.Operation;
 import ru.clevertec.news.services.impl.NewsServiceImpl;
 
 import java.util.List;
@@ -21,8 +21,8 @@ import static generators.factories.PageableFactory.*;
 import static generators.factories.PageableFactory.getDefaultPageable;
 import static generators.factories.news.ModificationNewsDtoFactory.*;
 import static generators.factories.news.NewsDtoFactory.*;
-import static generators.factories.news.NewsDtoFactory.getCreatedNews;
-import static generators.factories.news.NewsDtoFactory.getUpdatedNews;
+import static generators.factories.news.NewsDtoFactory.getCreatedNewsDto;
+import static generators.factories.news.NewsDtoFactory.getUpdatedNewsDto;
 import static org.assertj.core.api.Assertions.*;
 import static ru.clevertec.news.utils.constants.MessageConstants.*;
 
@@ -39,7 +39,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetAllNewsWithPaginationShouldReturnAll3News() {
         List<NewsDto> actualNews = service.getAllNewsWithPagination(getDefaultPageable());
-        List<NewsDto> expectedNews = NewsDtoFactory.getAllNews();
+        List<NewsDto> expectedNews = NewsDtoFactory.getAllNewsDtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -47,7 +47,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNewsWithPaginationShouldReturn2NewsWithPageSize2() {
         List<NewsDto> actualNews = service.getAllNewsWithPagination(getPageableWithSize2());
-        List<NewsDto> expectedNews = getFirst2News();
+        List<NewsDto> expectedNews = getFirst2NewsDtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -55,7 +55,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNeDwsWithPaginationShouldReturn2NewsFrom2PageAndSize2() {
         List<NewsDto> actualNews = service.getAllNewsWithPagination(getPageableWithPage2AndSize2());
-        List<NewsDto> expectedNews = getNews3AsList();
+        List<NewsDto> expectedNews = getNewsDto3AsList();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -70,7 +70,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNewsWithPaginationShouldReturnAll3NewsWithoutSort() {
         List<NewsDto> actualNews = service.getAllNewsWithPagination(getDefaultPageableWithSortingByUsernameDesc());
-        List<NewsDto> expectedNews = getAllNews();
+        List<NewsDto> expectedNews = getAllNewsDtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -79,7 +79,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationByTitleIgnoreCaseShouldReturn2News() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchByTitleIgnoreCase(), getDefaultPageable());
-        List<NewsDto> expectedNews = getNews2And3();
+        List<NewsDto> expectedNews = getNews2And3Dtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -88,7 +88,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationByTextIgnoreCaseShouldReturn2News() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchByTextIgnoreCase(), getDefaultPageable());
-        List<NewsDto> expectedNews = getNews2And3();
+        List<NewsDto> expectedNews = getNews2And3Dtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -97,7 +97,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationByTextIgnoreCaseShouldReturn1NewsWithSize1() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchByTextIgnoreCase(), getPageableWithSize1());
-        List<NewsDto> expectedNews = getNews2AsList();
+        List<NewsDto> expectedNews = getNewsDto2AsList();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -106,7 +106,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationByUsernameIgnoreCaseShouldReturn2News() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchByUsernameIgnoreCase(), getDefaultPageable());
-        List<NewsDto> expectedNews = getNews2And3();
+        List<NewsDto> expectedNews = getNews2And3Dtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -115,7 +115,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationByTextAndUsernameIgnoreCaseShouldReturn1News() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchByUsernameAndText(), getDefaultPageable());
-        List<NewsDto> expectedNews = getNews2AsList();
+        List<NewsDto> expectedNews = getNewsDto2AsList();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -124,7 +124,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationByDateShouldReturn1News() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchByDate(), getDefaultPageable());
-        List<NewsDto> expectedNews = getNews3AsList();
+        List<NewsDto> expectedNews = getNewsDto3AsList();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -169,7 +169,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void checkGetAllSearchedNewsWithPaginationShouldIgnoreId() {
         List<NewsDto> actualNews =
                 service.getAllSearchedNewsWithPagination(getDtoToSearchIgnoreId(), getDefaultPageable());
-        List<NewsDto> expectedNews = getAllNews();
+        List<NewsDto> expectedNews = getAllNewsDtos();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -177,7 +177,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNewsByIdShouldReturnNews1() {
         NewsDto actualNews = service.getNewsById(1L);
-        NewsDto expectedNews = getNews1();
+        NewsDto expectedNews = getNewsDto1();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -192,7 +192,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNewsByIdWithCommentsPaginationShouldReturnNewsWith4Comments() {
         NewsWithCommentsDto actualNews = service.getNewsByIdWithCommentsPagination(1L, getDefaultPageable());
-        NewsDto expectedNews = getNews1WithComments();
+        NewsDto expectedNews = getNewsDto1WithComments();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -200,7 +200,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNewsByIdWithCommentsPaginationShouldReturnNewsWith2Comments() {
         NewsWithCommentsDto actualNews = service.getNewsByIdWithCommentsPagination(1L, getPageableWithSize2());
-        NewsDto expectedNews = getNews1With2Comments();
+        NewsDto expectedNews = getNewsDto1With2Comments();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -208,7 +208,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkGetNewsByIdWithCommentsPaginationShouldReturnNewsWithNoComments() {
         NewsWithCommentsDto actualNews = service.getNewsByIdWithCommentsPagination(3L, getDefaultPageable());
-        NewsDto expectedNews = getNews3WithNoComments();
+        NewsDto expectedNews = getNewsDto3WithNoComments();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }
@@ -223,7 +223,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkAddNewsShouldReturnCreatedDto() {
         NewsDto actualNews = service.addNews(getModificationDto(), getAdmin());
-        NewsDto expectedNews = getCreatedNews();
+        NewsDto expectedNews = getCreatedNewsDto();
 
         assertThat(actualNews.getId()).isEqualTo(expectedNews.getId());
         assertThat(actualNews.getTitle()).isEqualTo(expectedNews.getTitle());
@@ -272,7 +272,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     @Test
     void checkUpdateNewsShouldReturnDtoWithUpdatedFields() {
         NewsDto actualNews = service.updateNews(1L, getModificationDto(), getAdmin());
-        NewsDto expectedNews = getUpdatedNews();
+        NewsDto expectedNews = getUpdatedNewsDto();
 
         assertThat(actualNews).isEqualTo(expectedNews);
     }

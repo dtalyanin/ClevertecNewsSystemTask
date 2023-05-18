@@ -1,4 +1,4 @@
-package ru.clevertec.news.models;
+package ru.clevertec.news.models.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

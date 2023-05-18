@@ -4,7 +4,7 @@ import org.springframework.http.HttpHeaders;
 import ru.clevertec.exceptions.models.ErrorCode;
 import ru.clevertec.exceptions.models.ErrorResponse;
 import ru.clevertec.exceptions.models.IncorrectValueErrorResponse;
-import ru.clevertec.news.models.Operation;
+import ru.clevertec.news.models.enums.Operation;
 
 import static ru.clevertec.exceptions.utils.constants.MessageConstants.HEADER_NOT_PRESENT;
 import static ru.clevertec.news.utils.constants.MessageConstants.*;

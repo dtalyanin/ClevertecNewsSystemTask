@@ -50,6 +50,10 @@ dependencyManagement {
 	}
 }
 
+jar {
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }

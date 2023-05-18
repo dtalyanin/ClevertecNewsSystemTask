@@ -27,12 +27,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @Sql(scripts = "classpath:/db/changelog/changeset/scripts/sequence-reset.sql")
 public abstract class BaseIntegrationTest {
 
-    private final ObjectMapper mapper = JsonMapper.builder()
-            .findAndAddModules()
-            .build();
-
     private static final PostgreSQLContainer<?> CONTAINER = new PostgreSQLContainer<>("postgres:15.2");
     private static final WireMockServer SERVER = new WireMockServer(8090);
+
+    private static final ObjectMapper MAPPER = JsonMapper.builder()
+            .findAndAddModules()
+            .build();
 
     @DynamicPropertySource
     static void setUp(DynamicPropertyRegistry registry) {
@@ -55,17 +55,17 @@ public abstract class BaseIntegrationTest {
                 .willReturn(aResponse().
                         withStatus(HttpStatus.OK.value())
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                        .withBody(mapper.writeValueAsString(AuthenticatedUserFactory.getAdmin()))));
+                                        .withBody(MAPPER.writeValueAsString(AuthenticatedUserFactory.getAdmin()))));
         stubFor(get(urlEqualTo("/users/token/journalist"))
                 .willReturn(aResponse().
                         withStatus(HttpStatus.OK.value())
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(AuthenticatedUserFactory.getJournalist()))));
+                        .withBody(MAPPER.writeValueAsString(AuthenticatedUserFactory.getJournalist()))));
         stubFor(get(urlEqualTo("/users/token/subscriber"))
                 .willReturn(aResponse().
                         withStatus(HttpStatus.OK.value())
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(AuthenticatedUserFactory.getSubscriber()))));
+                        .withBody(MAPPER.writeValueAsString(AuthenticatedUserFactory.getSubscriber()))));
     }
 
     @AfterAll

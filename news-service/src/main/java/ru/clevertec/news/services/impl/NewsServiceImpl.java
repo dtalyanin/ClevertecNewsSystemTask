@@ -20,7 +20,7 @@ import ru.clevertec.news.dto.news.NewsWithCommentsDto;
 import ru.clevertec.news.clients.dto.AuthenticatedUser;
 import ru.clevertec.news.models.Comment;
 import ru.clevertec.news.models.News;
-import ru.clevertec.news.models.Operation;
+import ru.clevertec.news.models.enums.Operation;
 import ru.clevertec.news.services.CommentsService;
 import ru.clevertec.news.services.NewsService;
 import ru.clevertec.news.utils.mappers.NewsMapper;

@@ -8,7 +8,7 @@ import ru.clevertec.exceptions.exceptions.NotFoundException;
 import ru.clevertec.news.dao.CommentsRepository;
 import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.integration.BaseIntegrationTest;
-import ru.clevertec.news.models.Operation;
+import ru.clevertec.news.models.enums.Operation;
 import ru.clevertec.news.services.impl.CommentsServiceImpl;
 
 import java.util.List;

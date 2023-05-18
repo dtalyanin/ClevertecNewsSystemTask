@@ -16,11 +16,11 @@ import java.util.List;
 public class NewsTestBuilder implements TestBuilder<News> {
 
     private Long id = 1L;
-    private String title = "Title";
+    private String title = "News";
     private String text = "Text";
     private String username = "User";
     private List<Comment> comments = new ArrayList<>();
-    private LocalDateTime time = LocalDateTime.parse("2023-01-01T11:00:00");
+    private LocalDateTime time = LocalDateTime.parse("2023-01-01T10:00:00");
 
     @Override
     public News build() {

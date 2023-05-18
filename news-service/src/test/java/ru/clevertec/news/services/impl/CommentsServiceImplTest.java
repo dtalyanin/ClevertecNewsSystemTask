@@ -16,7 +16,7 @@ import ru.clevertec.news.dto.comments.CommentDto;
 import ru.clevertec.news.dto.comments.CreateCommentDto;
 import ru.clevertec.news.dto.comments.UpdateCommentDto;
 import ru.clevertec.news.models.Comment;
-import ru.clevertec.news.models.Operation;
+import ru.clevertec.news.models.enums.Operation;
 import ru.clevertec.news.utils.mappers.CommentsMapper;
 
 import java.util.List;
@@ -212,7 +212,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void checkDeleteCommentByIdShouldBeCalledWithId() {
+    void checkDeleteCommentByIdShouldBeCalledWithComment() {
         Comment expectedDeletedComment = getComment1();
 
         ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
@@ -222,7 +222,7 @@ class CommentsServiceImplTest {
 
         Comment actualDeletedComment = captor.getValue();
 
-        assertThat(expectedDeletedComment).isEqualTo(actualDeletedComment);
+        assertThat(actualDeletedComment).isEqualTo(expectedDeletedComment);
 
         verify(repository).findById(anyLong());
     }

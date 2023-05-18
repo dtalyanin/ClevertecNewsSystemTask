@@ -34,7 +34,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllNewsWithPaginationShouldReturnAll3News() {
-        String jsonNews = mapper.writeValueAsString(getAllNews());
+        String jsonNews = mapper.writeValueAsString(getAllNewsDtos());
 
         mvc.perform(get("/news"))
                 .andExpect(status().isOk())
@@ -45,7 +45,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNewsWithPaginationShouldReturn2NewsWithPageSize2() {
-        String jsonNews = mapper.writeValueAsString(getFirst2News());
+        String jsonNews = mapper.writeValueAsString(getFirst2NewsDtos());
 
         mvc.perform(get("/news")
                         .param("size", "2"))
@@ -57,7 +57,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNeDwsWithPaginationShouldReturn2NewsFrom2PageAndSize2() {
-        String jsonNews = mapper.writeValueAsString(getNews3AsList());
+        String jsonNews = mapper.writeValueAsString(getNewsDto3AsList());
 
         mvc.perform(get("/news")
                         .param("size", "2")
@@ -70,7 +70,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNewsWithPaginationShouldReturnEmptyListWhenOutOfRange() {
-        String jsonNews = mapper.writeValueAsString(NewsDtoFactory.getEmptyListNews());
+        String jsonNews = mapper.writeValueAsString(NewsDtoFactory.getEmptyListNewsDtos());
 
         mvc.perform(get("/news")
                         .param("size", "20")
@@ -83,7 +83,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationByTitleIgnoreCaseShouldReturn2News() {
-        String jsonNews = mapper.writeValueAsString(getNews2And3());
+        String jsonNews = mapper.writeValueAsString(getNews2And3Dtos());
 
         mvc.perform(get("/news/search")
                         .param("title", "nEwS "))
@@ -95,7 +95,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationByTextIgnoreCaseShouldReturn2News() {
-        String jsonNews = mapper.writeValueAsString(getNews2And3());
+        String jsonNews = mapper.writeValueAsString(getNews2And3Dtos());
 
         mvc.perform(get("/news/search")
                         .param("text", "tExT "))
@@ -107,7 +107,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationByTextIgnoreCaseShouldReturn1NewsWithSize1() {
-        String jsonNews = mapper.writeValueAsString(getNews2AsList());
+        String jsonNews = mapper.writeValueAsString(getNewsDto2AsList());
 
         mvc.perform(get("/news/search")
                         .param("text", "tExT ")
@@ -120,7 +120,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationByUsernameIgnoreCaseShouldReturn2News() {
-        String jsonNews = mapper.writeValueAsString(getNews2And3());
+        String jsonNews = mapper.writeValueAsString(getNews2And3Dtos());
 
         mvc.perform(get("/news/search")
                         .param("username", "uSeR "))
@@ -132,7 +132,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationByTextAndUsernameIgnoreCaseShouldReturn1News() {
-        String jsonNews = mapper.writeValueAsString(getNews2AsList());
+        String jsonNews = mapper.writeValueAsString(getNewsDto2AsList());
 
         mvc.perform(get("/news/search")
                         .param("username", "uSeR 2")
@@ -145,7 +145,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationByDateShouldReturn1News() {
-        String jsonNews = mapper.writeValueAsString(getNews3AsList());
+        String jsonNews = mapper.writeValueAsString(getNewsDto3AsList());
 
         mvc.perform(get("/news/search")
                         .param("time", "2023-03-01T10:00:00"))
@@ -157,7 +157,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationShouldReturnEmptyListUsernameNotExist() {
-        String jsonNews = mapper.writeValueAsString(getEmptyListNews());
+        String jsonNews = mapper.writeValueAsString(getEmptyListNewsDtos());
 
         mvc.perform(get("/news/search")
                         .param("username", "User not exist"))
@@ -169,7 +169,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationShouldReturnEmptyListTextNotExist() {
-        String jsonNews = mapper.writeValueAsString(getEmptyListNews());
+        String jsonNews = mapper.writeValueAsString(getEmptyListNewsDtos());
 
         mvc.perform(get("/news/search")
                         .param("text", "Text not exist"))
@@ -181,7 +181,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationShouldReturnEmptyListDateNotExist() {
-        String jsonNews = mapper.writeValueAsString(getEmptyListNews());
+        String jsonNews = mapper.writeValueAsString(getEmptyListNewsDtos());
 
         mvc.perform(get("/news/search")
                         .param("time", "2022-03-01T10:00:00"))
@@ -193,7 +193,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationShouldReturnEmptyListTitleNotExist() {
-        String jsonNews = mapper.writeValueAsString(getEmptyListNews());
+        String jsonNews = mapper.writeValueAsString(getEmptyListNewsDtos());
 
         mvc.perform(get("/news/search")
                         .param("title", "Title not exist"))
@@ -205,7 +205,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetAllSearchedNewsWithPaginationShouldIgnoreId() {
-        String jsonNews = mapper.writeValueAsString(getAllNews());
+        String jsonNews = mapper.writeValueAsString(getAllNewsDtos());
 
         mvc.perform(get("/news/search")
                         .param("id", "1"))
@@ -217,7 +217,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNewsByIdShouldReturnNews1() {
-        String jsonNews = mapper.writeValueAsString(getNews1());
+        String jsonNews = mapper.writeValueAsString(getNewsDto1());
 
         mvc.perform(get("/news/{id}", 1L))
                 .andExpect(status().isOk())
@@ -237,7 +237,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNewsByIdWithCommentsPaginationShouldReturnNewsWith4Comments() {
-        String jsonNews = mapper.writeValueAsString(getNews1WithComments());
+        String jsonNews = mapper.writeValueAsString(getNewsDto1WithComments());
 
         mvc.perform(get("/news/{id}/comments", 1L))
                 .andExpect(status().isOk())
@@ -248,7 +248,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNewsByIdWithCommentsPaginationShouldReturnNewsWith2Comments() {
-        String jsonNews = mapper.writeValueAsString(getNews1With2Comments());
+        String jsonNews = mapper.writeValueAsString(getNewsDto1With2Comments());
 
         mvc.perform(get("/news/{id}/comments", 1L)
                         .param("size", "2"))
@@ -260,7 +260,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @Test
     @SneakyThrows
     void checkGetNewsByIdWithCommentsPaginationShouldReturnNewsWithNoComments() {
-        String jsonNews = mapper.writeValueAsString(getNews3WithNoComments());
+        String jsonNews = mapper.writeValueAsString(getNewsDto3WithNoComments());
 
         mvc.perform(get("/news/{id}/comments", 3L))
                 .andExpect(status().isOk())

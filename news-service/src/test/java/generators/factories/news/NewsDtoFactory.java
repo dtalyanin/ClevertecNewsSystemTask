@@ -12,11 +12,11 @@ import static generators.factories.comments.CommentDtoFactory.*;
 
 public class NewsDtoFactory {
 
-    public static NewsDto getNews1() {
+    public static NewsDto getNewsDto1() {
         return NewsDtoTestBuilder.builder().build();
     }
 
-    public static NewsDto getNews2() {
+    public static NewsDto getNewsDto2() {
         return NewsDtoTestBuilder.builder()
                 .withId(2L)
                 .withTitle("News 2")
@@ -26,7 +26,7 @@ public class NewsDtoFactory {
                 .build();
     }
 
-    public static NewsDto getNews3() {
+    public static NewsDto getNewsDto3() {
         return NewsDtoTestBuilder.builder()
                 .withId(3L)
                 .withTitle("News 3")
@@ -36,7 +36,7 @@ public class NewsDtoFactory {
                 .build();
     }
 
-    public static NewsDto getCreatedNews() {
+    public static NewsDto getCreatedNewsDto() {
         return NewsDtoTestBuilder.builder()
                 .withId(4L)
                 .withTitle("News new")
@@ -45,7 +45,7 @@ public class NewsDtoFactory {
                 .build();
     }
 
-    public static NewsWithCommentsDto getNews1WithComments() {
+    public static NewsWithCommentsDto getNewsDto1WithComments() {
         NewsWithCommentsDto dto = new NewsWithCommentsDto();
         dto.setId(1L);
         dto.setTitle("News");
@@ -56,7 +56,7 @@ public class NewsDtoFactory {
         return dto;
     }
 
-    public static NewsWithCommentsDto getNews1With2Comments() {
+    public static NewsWithCommentsDto getNewsDto1With2Comments() {
         NewsWithCommentsDto dto = new NewsWithCommentsDto();
         dto.setId(1L);
         dto.setTitle("News");
@@ -67,7 +67,7 @@ public class NewsDtoFactory {
         return dto;
     }
 
-    public static NewsWithCommentsDto getNews3WithNoComments() {
+    public static NewsWithCommentsDto getNewsDto3WithNoComments() {
         NewsWithCommentsDto dto = new NewsWithCommentsDto();
         dto.setId(3L);
         dto.setTitle("News 3");
@@ -78,34 +78,34 @@ public class NewsDtoFactory {
         return dto;
     }
 
-    public static NewsDto getUpdatedNews() {
+    public static NewsDto getUpdatedNewsDto() {
         return NewsDtoTestBuilder.builder()
                 .withTitle("News new")
                 .withText("Text new")
                 .build();
     }
 
-    public static List<NewsDto> getAllNews() {
-        return List.of(getNews1(), getNews2(), getNews3());
+    public static List<NewsDto> getAllNewsDtos() {
+        return List.of(getNewsDto1(), getNewsDto2(), getNewsDto3());
     }
 
-    public static List<NewsDto> getFirst2News() {
-        return List.of(getNews1(), getNews2());
+    public static List<NewsDto> getFirst2NewsDtos() {
+        return List.of(getNewsDto1(), getNewsDto2());
     }
 
-    public static List<NewsDto> getNews2And3() {
-        return List.of(getNews2(), getNews3());
+    public static List<NewsDto> getNews2And3Dtos() {
+        return List.of(getNewsDto2(), getNewsDto3());
     }
 
-    public static List<NewsDto> getNews2AsList() {
-        return List.of(getNews2());
+    public static List<NewsDto> getNewsDto2AsList() {
+        return List.of(getNewsDto2());
     }
 
-    public static List<NewsDto> getNews3AsList() {
-        return List.of(getNews3());
+    public static List<NewsDto> getNewsDto3AsList() {
+        return List.of(getNewsDto3());
     }
 
-    public static List<NewsDto> getEmptyListNews() {
+    public static List<NewsDto> getEmptyListNewsDtos() {
         return Collections.emptyList();
     }
 

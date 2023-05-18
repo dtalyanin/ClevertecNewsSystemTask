@@ -1,4 +1,4 @@
-package ru.clevertec.news.utils.cache;
+package ru.clevertec.news.aspects;
 
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.exceptions.exceptions.FieldException;
 import ru.clevertec.exceptions.models.ErrorCode;
+import ru.clevertec.news.utils.cache.CacheFacade;
 
 import java.lang.reflect.Field;
 

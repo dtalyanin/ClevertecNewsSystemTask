@@ -15,17 +15,20 @@ import static ru.clevertec.news.utils.constants.MessageConstants.WRONG_CACHE_CHO
 @Profile("dev")
 public class CacheFactory {
 
-    @Value("${cache.type}")
-    private String implementation;
-    @Value("#${cache.capacity}")
-    private int capacity;
+    private final String implementation;
+    private final int capacity;
+
+    public CacheFactory(@Value("${cache.type}") String implementation, @Value("#${cache.capacity}") int capacity) {
+        this.implementation = implementation;
+        this.capacity = capacity;
+    }
 
     public <T> Cache<T> getCacheImplementation() {
         if (capacity <= 0) {
             throw new CacheException(WRONG_CACHE_CAPACITY);
         }
-        implementation = implementation.toLowerCase();
-        return switch (implementation) {
+        String lowerCaseImplementation = implementation.toLowerCase();
+        return switch (lowerCaseImplementation) {
             case "lru" -> new LRUCache<>(capacity);
             case "lfu" -> new LFUCache<>(capacity);
             default -> throw new CacheException(WRONG_CACHE_CHOICE);
