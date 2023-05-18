@@ -5,10 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.clevertec.exceptions.exceptions.AuthenticationException;
+import ru.clevertec.exceptions.exceptions.PasswordException;
 import ru.clevertec.exceptions.exceptions.TokenException;
 import ru.clevertec.exceptions.exceptions.UserExistException;
 import ru.clevertec.exceptions.models.ErrorResponse;
 import ru.clevertec.exceptions.models.IncorrectValueErrorResponse;
+import ru.clevertec.exceptions.models.SingleFieldValidationResponse;
+import ru.clevertec.exceptions.models.ValidationResponse;
 
 @ControllerAdvice
 public class UsersExceptionHandler {
@@ -37,6 +40,17 @@ public class UsersExceptionHandler {
         ErrorResponse response = new ErrorResponse(e.getMessage(), e.getErrorCode().getCode());
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
+
+    @ExceptionHandler(PasswordException.class)
+    public ResponseEntity<ValidationResponse> handlePasswordException(PasswordException e) {
+        SingleFieldValidationResponse response = new SingleFieldValidationResponse(
+                e.getInvalidValue(),
+                e.getMessage(),
+                e.getErrorCode().getCode());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(response);
     }
 }

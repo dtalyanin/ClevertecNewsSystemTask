@@ -1,0 +1,12 @@
+spring:
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+        one-indexed-parameters: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master-test.yaml
