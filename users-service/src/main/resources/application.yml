@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: users
+
+  config:
+    import: optional:configserver:http://configs-service:8888

@@ -1,0 +1,2 @@
+rootProject.name = 'news-managment-system'
+include 'news-service', 'users-service', 'configs-service', 'exceptions-starter', 'loggers-starter'

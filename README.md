@@ -1,54 +1,58 @@
-# Система управления новостями
+# RESTful web service that implements the functionality for working with the news management system
 
-Разработать RESTful web-service, реализующей функционал для работы с системой управления новостями.
+## Used technologies
+* Java 17
+* Gradle 7.6
+* BD: PostgreSQL
+* Cache: Redis
+* Spring Boot 3
+* Spring Data JPA
+* Spring AOP
+* Spring Security
+* Spring Cloud Config
+* TestContainers
+* WireMock
+* Swagger
+* Docker
 
-Основные сущности:
--	**news** (новость) содержит поля: id, time, title, text и comments (list).
--	**comment** содержит поля: id, time, text, username и news_id.
+## News service
 
-Требования:
-1.	Использовать Spring Boot 3.x, Java 17, Gradle и PostgreSQL
-2.	Разработать API согласно подходам REST (UI не надо):
-    -	CRUD для работы с новостью
-    -	CRUD для работы с комментарием
-    -	просмотр списка новостей (с пагинацией)
-    -	просмотр новости с комментариями относящимися к ней (с пагинацией)
-    -	полнотекстовый поиск по различным параметрам (для новостей и комментариев)
-    
-    Для потенциально объемных запросов реализовать постраничность
-3.	Разместить проект в любом из публичных git-репозиториев (Bitbucket, github, gitlab)
-4.	Код должен быть легко читаемый и понятный, с использованием паттернов проектирования
-5.	Реализовать на основе Spring @Profile (e.g. test & prod) подключение к базам данных. 
-6.	Подключить liquibase: 
-    - при запуске сервиса накатываются скрипты на рабочую БД (генерируются необходимые таблицы из одного файла и наполняются таблицы данными из другого файла, 20 новостей и 10 комментариев, связанных с каждой новостью
-    - при запуске тестов должен подхватываться скрипт по генерации необходимых таблиц + накатить данные по заполнению таблиц (третий файл)
-7.	Создать реализацию кэша, для хранения сущностей. Реализовать два алгоритма  LRU и LFU. Алгоритм и максимальный размер коллекции должны читаться из файла application.yml. Алгоритм работы с кешем:
-    - GET - ищем в кеше и если там данных нет, то достаем объект из dao, сохраняем в кеш и возвращаем
-    - POST - сохраняем в dao и потом сохраняем в кеше
-    - DELETE - удаляем из dao и потом удаляем в кеша
-    - PUT - обновление/вставка в dao и потом обновление/вставка в кеше.
-8.	Весь код должен быть покрыт юнит-тестами (80%) (сервисный слой – 100%)
-9.	Реализовать логирование запрос-ответ в аспектном стиле (для слоя Controlles), а также логирование по уровням в отдельных слоях приложения, используя logback
-10.	Предусмотреть обработку исключений и интерпретацию их согласно REST (см. https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc)
-11.	Все настройки должны быть вынесены в *.yml
-12.	Код должен быть документирован @JavaDoc, а назначение приложения и его интерфейс и настройки должны быть описаны в README.md файле
-13.	Использовать Spring REST Docs или другие средства автоматического документирования (например asciidoctor https://asciidoctor.org/docs/asciidoctor-gradle-plugin/ и т.д) и/или Swagger (OpenAPI 3.0)
-14.	Использовать testcontainers в тестах на persistence layer (для БД)
-15.	Написать интеграционные тесты
-16.	Использовать WireMock в тестах для слоя clients 
-17.	Использовать Docker (написать Dockerfile – для spring boot приложения, docker-compose.yml для поднятия БД и приложения в контейнерах и настроить взаимодействие между ними)
-18.	*Подключить кэш провайдер Redis (в docker) (в случае реализации, использовать @Profile для переключения между LRU/LFU и Redis)
-19.	*Spring Security:
-    -	API для регистрации пользователей с ролями admin/journalist/subscriber
-    -	Администратор (role admin) может производить CRUD-операции со всеми сущностями
-    -	Журналист (role journalist) может добавлять и изменять/удалять только свои новости 
-    -	Подписчик (role subscriber) может добавлять и изменять/удалять только свои комментарии
-    -	Незарегистрированные пользователи могут только просматривать новости и комментарии
-    
-    Создать отдельный микросервис с реляционной базой (postgreSQL) хранящей информацию о пользователях/ролях. Из главного микросервиса (отвечающего за новости) запрашивать эту информацию по  REST с использованием spring-cloud-feign-client.
-20.	*Настроить Spring Cloud Config (вынести в отдельный сервис и настроить разрабатываемый сервис на получение их в зависимости от профиля)
-21.	*Реализацию логирования п.10 и обработку исключений вынести в отдельные
-spring-boot-starter-ы.
-22.	*Сущности веб интерфейса (DTO) должны генерироваться при сборке проекта из .proto файлов (см. https://github.com/google/protobuf-gradle-plugin)
+Service for performing operations with news and comments. Uses cache depending on the selected profile (prod - Redis, dev - custom LRU or LFU cache  implementation)
 
-“*” – необходимо минимум выполнить два задания со звёздочкой, больше заданий будет существенным плюсом. К этим пунктам лучше приступать после качественного решения базовых задач с применением принципов SOLID, декларативных подходов, оптимальных алгоритмов.
+**Endpoints**:    
+**GET** */news* - Find all news   
+**GET** */news/search* - Find news by request params  
+**GET** */news/{id}* - Get news by ID   
+**GET** */news/{id}/comments* - Get news by ID with comments   
+**POST** */news* - Create new news  
+**PATCH** */news/{id}* - Update news fields   
+**DELETE** */news/{id}* - Delete news by ID
+
+**GET** */comments* - Find all comments   
+**GET** */comments/search* - Find comments by request params    
+**GET** *comments/{id}* - Get comment by ID   
+**POST** */comments* - Create new comment   
+**PATCH** */comments/{id}* - Update comment fields    
+**DELETE** */comments/{id}* - Delete comment by ID
+
+## Users service
+
+Service for performing operations with users and authentication by JWT token. All requests except get require a JWT token
+
+**Endpoints**:    
+**GET** */users* - Find all users   
+**GET** */users/{id}* - Get users by ID   
+**POST** */users* - Create new user  
+**PATCH** */users/{id}* - Update user fields   
+**DELETE** */users/{id}* - Delete user by ID
+
+**POST** */auth* - Authentication by JWT token
+
+## Configs service
+Service for externalized configuration in system. Uses [github](https://github.com/dtalyanin/ClevertecNewsSystemConfigs) to store configuration
+
+## Exceptions starter
+Used for storing exception handlers for all services
+
+## Loggers starter
+Used to log requests and responses from controller layers
