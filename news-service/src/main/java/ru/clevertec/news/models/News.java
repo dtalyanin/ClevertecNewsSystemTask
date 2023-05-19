@@ -11,6 +11,9 @@ import java.util.List;
 
 import static ru.clevertec.news.utils.constants.MessageConstants.*;
 
+/**
+ * News entity for DB
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

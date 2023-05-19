@@ -13,6 +13,9 @@ import ru.clevertec.news.models.Comment;
 
 import java.util.List;
 
+/**
+ * Mapper for converting comments
+ */
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)

@@ -3,6 +3,9 @@ package ru.clevertec.exceptions.exceptions;
 import lombok.Getter;
 import ru.clevertec.exceptions.models.ErrorCode;
 
+/**
+ * Password encoding exception (null or blank password)
+ */
 @Getter
 public class PasswordException extends IllegalArgumentException {
 

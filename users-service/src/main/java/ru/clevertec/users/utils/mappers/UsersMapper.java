@@ -16,6 +16,9 @@ import java.util.List;
 
 import static ru.clevertec.users.utils.constants.MessageConstants.EMPTY_PASSWORD;
 
+/**
+ * Mapper for converting users
+ */
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,

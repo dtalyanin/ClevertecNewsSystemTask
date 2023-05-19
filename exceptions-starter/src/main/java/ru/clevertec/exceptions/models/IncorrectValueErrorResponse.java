@@ -2,6 +2,9 @@ package ru.clevertec.exceptions.models;
 
 import lombok.Getter;
 
+/**
+ * Response with incorrect value, that caused exception
+ */
 @Getter
 public class IncorrectValueErrorResponse extends ErrorResponse {
 

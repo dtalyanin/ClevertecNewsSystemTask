@@ -11,6 +11,9 @@ import ru.clevertec.news.utils.cache.impl.LRUCache;
 import static ru.clevertec.news.utils.constants.MessageConstants.WRONG_CACHE_CAPACITY;
 import static ru.clevertec.news.utils.constants.MessageConstants.WRONG_CACHE_CHOICE;
 
+/**
+ * Factory for getting cache implementation
+ */
 @Component
 @Profile("dev")
 public class CacheFactory {
@@ -23,6 +26,11 @@ public class CacheFactory {
         this.capacity = capacity;
     }
 
+    /**
+     * returns a cache based on values from application.yml
+     *
+     * @return cache implementation
+     */
     public <T> Cache<T> getCacheImplementation() {
         if (capacity <= 0) {
             throw new CacheException(WRONG_CACHE_CAPACITY);

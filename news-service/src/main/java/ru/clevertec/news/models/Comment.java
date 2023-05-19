@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 
 import static ru.clevertec.news.utils.constants.MessageConstants.*;
 
+/**
+ * Comment entity for DB
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

@@ -2,18 +2,27 @@ package ru.clevertec.exceptions.models;
 
 import lombok.Getter;
 
+/**
+ * Error code that represent exception
+ */
 @Getter
 public enum ErrorCode {
+
     INCORRECT_FIELD_VALUE(40000),
+
     INCORRECT_AUTHENTICATION_DATA(404),
     USER_ID_NOT_FOUND(40401),
     USERNAME_NOT_FOUND(40402),
+
     USER_EXIST(422),
+
     INCORRECT_TOKEN(40301),
     TOKEN_EXPIRED(40302),
     TOKEN_NOT_VALID(40303),
+
     NEWS_NOT_FOUND(40401),
     COMMENT_NOT_FOUND(40402),
+
     INVALID_FIELD_VALUE(40000),
     INVALID_NEWS_FIELD_VALUE(40001),
     INVALID_COMMENT_FIELD_VALUE(40002),
@@ -28,7 +37,6 @@ public enum ErrorCode {
 
     GENERAL_EXCEPTION(500),
     FIELD_REFLECT_EXCEPTION(50001);
-
 
     private final int code;
 

@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15.2
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_MULTIPLE_DATABASES: nms,uas
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - nms-network
+    restart: unless-stopped
+
+  configs-service:
+    build: ./configs-service/.
+    container_name: configs-service
+    ports:
+      - "8888:8888"
+    networks:
+      - nms-network
+    restart: unless-stopped
+
+  news-service:
+    build: ./news-service/.
+    container_name: news-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
+    depends_on:
+     - postgres
+     - configs-service
+     - redis
+    networks:
+      - nms-network
+    restart: unless-stopped
+
+  users-service:
+    build: ./users-service/.
+    container_name: users-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      - postgres
+      - configs-service
+    networks:
+      - nms-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.0.11
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - nms-network
+    restart: unless-stopped
+
+networks:
+  nms-network:

@@ -19,12 +19,16 @@ import static ru.clevertec.exceptions.utils.ValidationResponsesFactory.getRespon
 import static ru.clevertec.exceptions.utils.ValidationResponsesFactory.getResponseFromErrors;
 import static ru.clevertec.exceptions.utils.constants.MessageConstants.HEADER_NOT_PRESENT;
 
+/**
+ * Advice for handling global exception thrown by application
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
      * Handle exception, when cannot read value (for example cannot get Enum constant)
-     *
+     * @param e Caught exception
+     * @return Error response with message end error code
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(HttpMessageNotReadableException e) {
@@ -34,6 +38,11 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    /**
+     * Handle validation exception that reports result of constraint violations
+     * @param e Caught exception
+     * @return Error response with incorrect value, message end error code
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ValidationResponse> handleConstraintViolationException(ConstraintViolationException e) {
         ValidationResponse response = getResponseFromConstraints(e.getConstraintViolations());
@@ -42,6 +51,11 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    /**
+     * Handle validation exception when method argument not valid
+     * @param e Caught exception
+     * @return Error response with incorrect value, message end error code
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationResponse> handleMethodValidationException(MethodArgumentNotValidException e) {
         ValidationResponse response = getResponseFromErrors(e.getFieldErrors());
@@ -50,6 +64,11 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    /**
+     * Handle exception when required header is missing
+     * @param e Caught exception
+     * @return Error response with message end error code
+     */
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
         String message = e.getHeaderName() + HEADER_NOT_PRESENT;
@@ -59,6 +78,11 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    /**
+     * Handle exception when searched item not found
+     * @param e Caught exception
+     * @return Error response with message end error code
+     */
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<IncorrectValueErrorResponse> handleUserNotFoundException(NotFoundException e) {
         IncorrectValueErrorResponse response = new IncorrectValueErrorResponse(
@@ -70,6 +94,11 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    /**
+     * Handle exception when cannot get object field with reflection
+     * @param e Caught exception
+     * @return Error response with message end error code
+     */
     @ExceptionHandler(FieldException.class)
     public ResponseEntity<ErrorResponse> handleFieldException(FieldException e) {
         ErrorResponse response = new ErrorResponse(

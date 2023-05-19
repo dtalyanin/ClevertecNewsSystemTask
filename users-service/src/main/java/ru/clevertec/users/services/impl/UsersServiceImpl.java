@@ -23,6 +23,9 @@ import java.util.Optional;
 import static ru.clevertec.users.utils.PageableHelper.setPageableUnsorted;
 import static ru.clevertec.users.utils.constants.MessageConstants.*;
 
+/**
+ * Service for performing operations with users entity in DB
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

@@ -6,4 +6,11 @@ spring:
     active: dev
 
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://configs-service:8888
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          users-service:
+            url: http://users-service:8090

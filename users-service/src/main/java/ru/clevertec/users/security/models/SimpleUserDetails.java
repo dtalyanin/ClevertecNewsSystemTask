@@ -10,6 +10,9 @@ import ru.clevertec.users.models.User;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * UserDetails for user from DB
+ */
 @RequiredArgsConstructor
 @Getter
 public class SimpleUserDetails implements UserDetails {
