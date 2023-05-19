@@ -8,8 +8,9 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_MULTIPLE_DATABASES: nms,uas
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -20,7 +21,7 @@ services:
     ports:
       - "8888:8888"
     networks:
-      - news-network
+      - nms-network
     restart: unless-stopped
 
   news-service:
@@ -31,9 +32,9 @@ services:
     depends_on:
      - postgres
      - configs-service
-     - cache
+     - redis
     networks:
-      - news-network
+      - nms-network
     restart: unless-stopped
 
   users-service:
@@ -45,17 +46,17 @@ services:
       - postgres
       - configs-service
     networks:
-      - news-network
+      - nms-network
     restart: unless-stopped
 
-  cache:
+  redis:
     image: redis:7.0.11
     container_name: redis-cache
     ports:
       - "6379:6379"
     networks:
-      - news-network
+      - nms-network
     restart: unless-stopped
 
 networks:
-  news-network:
+  nms-network:
