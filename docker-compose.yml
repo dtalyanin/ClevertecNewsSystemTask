@@ -13,6 +13,8 @@ services:
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+    networks:
+      - nms-network
     restart: unless-stopped
 
   configs-service:
@@ -27,6 +29,8 @@ services:
   news-service:
     build: ./news-service/.
     container_name: news-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
     ports:
       - "8080:8080"
     depends_on:
