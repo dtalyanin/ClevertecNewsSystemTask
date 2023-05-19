@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.news.integration.BaseIntegrationTest;
 
-import static generators.BearerTokenFactory.*;
+import static generators.factories.BearerTokenFactory.*;
 import static generators.factories.AuthenticatedUserFactory.getSubscriber;
 import static generators.factories.ErrorResponseFactory.*;
 import static generators.factories.ModificationResponseFactory.*;

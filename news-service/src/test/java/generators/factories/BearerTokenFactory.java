@@ -1,4 +1,4 @@
-package generators;
+package generators.factories;
 
 public class BearerTokenFactory {
 
@@ -12,5 +12,9 @@ public class BearerTokenFactory {
 
     public static String getSubscriberToken() {
         return "Bearer subscriber";
+    }
+
+    public static String getEmptyToken() {
+        return "";
     }
 }

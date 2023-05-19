@@ -5,7 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.clevertec.exceptions.exceptions.TokenException;
 
-import static generators.BearerTokenFactory.getAdminToken;
+import static generators.factories.BearerTokenFactory.getAdminToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static ru.clevertec.news.utils.JwtTokenHelper.getJwtTokenFromAuthHeader;
