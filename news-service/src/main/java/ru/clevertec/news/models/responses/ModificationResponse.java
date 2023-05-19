@@ -2,6 +2,7 @@ package ru.clevertec.news.models.responses;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Getter;
 @Schema(description = "Response with ID that was affected during operation and message about execution")
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class ModificationResponse {
     private long id;
     private String message;

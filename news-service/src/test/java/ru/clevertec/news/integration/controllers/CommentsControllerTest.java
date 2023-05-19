@@ -10,8 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.news.integration.BaseIntegrationTest;
 
-import static generators.BearerTokenFactory.getAdminToken;
-import static generators.BearerTokenFactory.getSubscriberToken;
+import static generators.factories.BearerTokenFactory.getAdminToken;
+import static generators.factories.BearerTokenFactory.getSubscriberToken;
 import static generators.factories.ErrorResponseFactory.*;
 import static generators.factories.ModificationResponseFactory.*;
 import static generators.factories.ValidationResponseFactory.getResponseEmptyCommentText;
