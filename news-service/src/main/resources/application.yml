@@ -6,11 +6,38 @@ spring:
     active: dev
 
   config:
-    import: optional:configserver:http://configs-service:8888
+    import: optional:configserver:http://localhost:8888
 
   cloud:
     openfeign:
       client:
         config:
           users-service:
-            url: http://users-service:8090
+            url: http://localhost:8090
+      circuitbreaker:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info, metric
+
+  health:
+    circuitbreakers:
+      enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-size: 50
+        minimum-number-of-calls: 4
+
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s
+        cancel-running-future: true
+

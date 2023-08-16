@@ -62,5 +62,24 @@ services:
       - nms-network
     restart: unless-stopped
 
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - nms-network
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./metric/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - nms-network
+
 networks:
   nms-network:
